@@ -13,7 +13,6 @@ public class PlayerCamera : MonoBehaviour
     [Space]
 
     [Header("Mouse"), Space]
-
     [SerializeField, Range(5, 999), Tooltip("How fast the camera moves with the mouse")] float m_Sensitivity = 200f;
     bool m_EnableMouse = true;
 
@@ -25,9 +24,8 @@ public class PlayerCamera : MonoBehaviour
     [SerializeField, Tooltip("Where the players camera will sit when not crouching.")] Vector3 m_RestPosition;
     [SerializeField, Tooltip("Where the players camera will sit when crouching.")] Vector3 m_CroushPositon;
 
-
-
     //======================================================
+    
     float m_Xpos;
     float m_Ypos;
 
@@ -131,7 +129,6 @@ public class PlayerCamera : MonoBehaviour
         {
             m_IsCursorShowing = false;
             SetCrouchState(m_IsCursorShowing);
-
         }
         else
         {

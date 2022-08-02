@@ -72,5 +72,4 @@ public class PauseManager : MonoBehaviour
             m_PausePanel.gameObject.SetActive(m_IsPaused);
         }
     }
-
 }

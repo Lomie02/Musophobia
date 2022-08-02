@@ -1,24 +1,34 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class InputManager : MonoBehaviour
 {
     [Header("General")]
     [SerializeField, Tooltip("Object to act as a ligher")] GameObject m_LighterObject;
 
-    [Header("General")]
+    [Header("Lighter Events")]
+    [SerializeField] UnityEvent m_LighterOn;
+    [SerializeField] UnityEvent m_LighterOff;
 
+    ItemManager m_ItemManager;
+    RaycastHit m_Ray;
+    [SerializeField] Transform m_ItemBox;
 
-
+    bool m_HoldingItem;
     PlayerCamera m_PlayerView;
     GameManger m_GameManger;
+
     bool m_CandleOn = true;
 
     private void Start()
     {
-        m_GameManger = FindObjectOfType<GameManger>();  
+        m_ItemManager = FindObjectOfType<ItemManager>();
+        m_GameManger = FindObjectOfType<GameManger>();
+
         m_PlayerView = FindObjectOfType<PlayerCamera>();
+        m_ItemManager.SetItemBox(m_ItemBox);
     }
 
     void Update()
@@ -30,10 +40,40 @@ public class InputManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.E))
         {
             SearchForDoor();
+
+            if (!m_HoldingItem)
+            {
+                Searchitem();
+            }
         }
 
+        if (Input.GetKeyDown(KeyCode.G))
+        {
+            CycleMode();
+        }
+
+        if (m_HoldingItem)
+        {
+            m_Ray.collider.gameObject.transform.position = m_ItemBox.position;
+            m_Ray.collider.gameObject.transform.parent = m_ItemBox;
+        }
     }
 
+    public void Searchitem()
+    {
+        if (Physics.Raycast(m_PlayerView.transform.position, m_PlayerView.transform.forward, out m_Ray, 5))
+        {
+            if (m_Ray.collider.tag == "Item")
+            {
+                m_HoldingItem = true;
+                m_Ray.collider.transform.forward = m_ItemBox.forward;
+                m_Ray.collider.gameObject.transform.position = m_ItemBox.position;
+
+
+                m_ItemManager.SetObject(m_Ray.collider.gameObject);
+            }
+        }
+    }
     public void SearchForDoor()
     {
         RaycastHit cast;
@@ -49,13 +89,15 @@ public class InputManager : MonoBehaviour
 
     void CycleCandle()
     {
-        if (m_LighterObject.activeSelf)
+        if (m_CandleOn)
         {
-            SetCandle(false);
+            m_LighterOff.Invoke();
+            m_CandleOn = false;
         }
         else
         {
-            SetCandle(true);
+            m_LighterOn.Invoke();
+            m_CandleOn = true;
         }
     }
 
@@ -72,4 +114,19 @@ public class InputManager : MonoBehaviour
         return m_CandleOn;
     }
 
+    private void CycleMode()
+    {
+        if (m_HoldingItem)
+        {
+            m_ItemManager.SetNullObject();
+
+            m_Ray.collider.gameObject.transform.parent = null;
+            m_ItemManager.ClearVectors();
+            m_HoldingItem = false;
+        }
+        else
+        {
+            m_HoldingItem = true;
+        }
+    }
 }
