@@ -5,8 +5,9 @@ using UnityEngine.UI;
 
 public class PauseManager : MonoBehaviour
 {
-    [SerializeField] Image m_PausePanel = null;
-    [SerializeField] PlayerCamera m_Player;
+    [Header("General")]
+    [SerializeField, Tooltip("The panel that will be used as the pause menu.")] Image m_PausePanel = null;
+    PlayerCamera m_Player;
     AudioSource[] m_PausedAudioSource = null;
 
     bool m_IsPaused = false;

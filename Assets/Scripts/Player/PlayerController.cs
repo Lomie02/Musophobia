@@ -5,20 +5,15 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerController : MonoBehaviour
 {
-    [Header("General")]
     Rigidbody m_PlayerMovement = null;
 
-    [SerializeField] float m_WalkSpeed = 2f;
-    [SerializeField] float m_SprintSpeed = 5f;
-
-    [Space]
-
-    [SerializeField] float m_JumpMultiplier = 5;
+    [Header("General")]
+    [SerializeField, Tooltip("How fast the player walks.")] float m_WalkSpeed = 2f;
+    [SerializeField, Tooltip("How fast the player runs.")] float m_SprintSpeed = 5f;
 
     float m_MovementSpeed;
     PlayerCamera m_PlayerCamera = null;
     bool m_CrouchState = false;
-    bool m_IsGrounded = false;
 
     void Start()
     {
@@ -31,15 +26,10 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.LeftControl) && m_IsGrounded)
+        if (Input.GetKeyDown(KeyCode.LeftControl))
         {
             CycleCrouch();
             m_PlayerCamera.SetCrouchState(m_CrouchState);
-        }
-
-        if (Input.GetKeyDown(KeyCode.Space) && m_IsGrounded && !m_CrouchState)
-        {
-            m_PlayerMovement.AddForce(transform.up * m_JumpMultiplier, ForceMode.Impulse);
         }
     }
 
@@ -52,17 +42,7 @@ public class PlayerController : MonoBehaviour
 
             Vector3 MoveV = transform.right * x + transform.forward * z;
 
-            if (Physics.Raycast(transform.position, -transform.up, 1.5f))
-            {
-                m_IsGrounded = true;
-            }
-            else
-            {
-                m_IsGrounded = false;
-            }
-
-
-            if (Input.GetKey(KeyCode.LeftShift) && Input.GetKey(KeyCode.W) && !m_CrouchState && m_IsGrounded)
+            if (Input.GetKey(KeyCode.LeftShift) && Input.GetKey(KeyCode.W) && !m_CrouchState)
             {
                 m_MovementSpeed = m_SprintSpeed;
             }
@@ -70,10 +50,6 @@ public class PlayerController : MonoBehaviour
             {
                 m_MovementSpeed = m_WalkSpeed;
             }
-
-
-
-
 
             m_PlayerMovement.MovePosition(transform.position + MoveV.normalized * m_MovementSpeed * Time.fixedDeltaTime);
         }
