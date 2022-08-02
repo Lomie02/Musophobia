@@ -17,6 +17,12 @@ public class GameManger : MonoBehaviour
 
     [SerializeField, Tooltip("When enabled the mouse cursor will get fixed at the start of the frame.")] AutoFixMouse m_AutoFixMouse = AutoFixMouse.DISABLED;
 
+    [Header("Scene Changes")]
+
+    [SerializeField] string m_MainMenuScreen = "MainMenu";
+    [SerializeField] string m_WinScreen = "WinScreen";
+    [SerializeField] string m_GameOverScreen = "GameOver";
+
     PauseManager m_PauseManager = null;
 
 
@@ -57,5 +63,20 @@ public class GameManger : MonoBehaviour
     public void QuitGame()
     {
         Application.Quit();
+    }
+
+    public string GetGameOverName()
+    {
+        return m_GameOverScreen;
+    }
+
+    public string GetMainMenuScreen()
+    {
+        return m_MainMenuScreen;
+    }
+
+    public string GetWinScreen()
+    {
+        return m_WinScreen;
     }
 }

@@ -7,34 +7,34 @@ public class PlayerCamera : MonoBehaviour
 {
     [Header("General")]
 
-    Transform m_Camera = null;
-    [SerializeField] Transform m_Body = null;
-    [SerializeField] float m_RotationLimits = 90;
+    [SerializeField, Tooltip("The players body object.")] Transform m_Body = null;
+    [SerializeField, Tooltip("Adds a limit when looking up & down.")] float m_RotationLimits = 90;
 
     [Space]
-
-    [SerializeField] float m_StoppingDistance = 2;
 
     [Header("Mouse"), Space]
 
-    [SerializeField] bool m_State = true;
-    [SerializeField] float m_Sensitivity = 200f;
+    [SerializeField, Range(5, 999), Tooltip("How fast the camera moves with the mouse")] float m_Sensitivity = 200f;
+    bool m_EnableMouse = true;
 
     [Header("Crouching"), Space]
-    [SerializeField] Vector3 m_RestPosition;
-    [SerializeField] Vector3 m_CroushPositon;
+    [SerializeField, Tooltip("The players collider for crouching adjustments.")] CapsuleCollider m_ColliderBody;
 
     [Space]
 
-    [SerializeField] CapsuleCollider m_ColliderBody;
+    [SerializeField, Tooltip("Where the players camera will sit when not crouching.")] Vector3 m_RestPosition;
+    [SerializeField, Tooltip("Where the players camera will sit when crouching.")] Vector3 m_CroushPositon;
+
+
 
     //======================================================
-    public float m_Xpos;
-    public float m_Ypos;
+    float m_Xpos;
+    float m_Ypos;
 
     bool m_IsCrouching = false;
     bool m_IsCursorShowing = false;
 
+    Transform m_Camera = null;
     void Start()
     {
         m_Camera = GetComponent<Transform>();
@@ -43,7 +43,7 @@ public class PlayerCamera : MonoBehaviour
 
     void Update()
     {
-        if (m_State)
+        if (m_EnableMouse)
         {
             float Xpos = Input.GetAxis("Mouse X") * (m_Sensitivity * 2) * Time.deltaTime;
             float Ypos = Input.GetAxis("Mouse Y") * (m_Sensitivity * 2) * Time.deltaTime;
@@ -91,12 +91,12 @@ public class PlayerCamera : MonoBehaviour
 
     public void SetPlayerState(bool _state)
     {
-        m_State = _state;
+        m_EnableMouse = _state;
     }
 
     public bool GetPlayerState()
     {
-        return m_State;
+        return m_EnableMouse;
     }
 
     bool CheckCanCrouch()

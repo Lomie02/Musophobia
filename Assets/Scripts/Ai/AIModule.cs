@@ -8,10 +8,8 @@ public class AIModule : MonoBehaviour
 {
     enum EnemyStates
     {
-        IDLE = 0,
-        ROAM,
+        ROAM = 0,
         CHASE,
-        NOISE,
     }
 
     enum PlayerSearch
@@ -19,7 +17,6 @@ public class AIModule : MonoBehaviour
         MANUAL = 0,
         TAG,
     }
-
 
     //===========================================
 
@@ -29,13 +26,13 @@ public class AIModule : MonoBehaviour
     [SerializeField, Tooltip("Tag to search for. (Requires TAG setting.)")] string m_SearchTag = "Player";
     [SerializeField, Tooltip("The AI will treat this object as the player.")] GameObject m_Player;
 
-    [Space]
 
+    [Header("Detection")]
     [SerializeField, Tooltip("Cooldown bewteen random path finding.")] float m_WonderTime = 5f;
     float m_WonderTimer = 0;
-
     [SerializeField, Tooltip("How far the AI can see.")] float m_SearchDistance = 10f;
-    [SerializeField, Tooltip("NOTE: Changing this will affect the AI path finding!")] LayerMask m_SearchLayer;
+
+    [SerializeField, Tooltip("NOTE: Changing this will affect the AI path finding!"), Space()] LayerMask m_SearchLayer;
 
     [Header("Movement")]
     [SerializeField, Range(3, 50),Tooltip("The speed the AI will roam at.")] float m_RoamSpeed = 1f;
@@ -93,18 +90,12 @@ public class AIModule : MonoBehaviour
     {
         switch (m_AiStates)
         {
-            case EnemyStates.IDLE:
-                break;
-
             case EnemyStates.ROAM:
                 SeekArea();
                 break;
 
             case EnemyStates.CHASE:
                 ChasePlayer();
-                break;
-
-            case EnemyStates.NOISE:
                 break;
         }
 
@@ -143,7 +134,7 @@ public class AIModule : MonoBehaviour
             {
                 if (deathCast.collider.tag == "Player")
                 {
-                    m_GameManger.ChangeScene("GameOver");
+                    m_GameManger.ChangeScene(m_GameManger.GetGameOverName());
                 }
             }
         }
