@@ -45,6 +45,10 @@ public class InputManager : MonoBehaviour
             {
                 Searchitem();
             }
+            else
+            {
+                SearchKeyDoor();
+            }
         }
 
         if (Input.GetKeyDown(KeyCode.G))
@@ -74,7 +78,7 @@ public class InputManager : MonoBehaviour
             }
         }
     }
-    public void SearchForDoor()
+     void SearchForDoor()
     {
         RaycastHit cast;
 
@@ -83,6 +87,21 @@ public class InputManager : MonoBehaviour
             if (cast.collider.tag == "ExitDoor")
             {
                 m_GameManger.ChangeScene("Escaped");
+            }
+        }
+    }
+     void SearchKeyDoor()
+    {
+        RaycastHit cast;
+
+        if (Physics.Raycast(m_PlayerView.transform.position, m_PlayerView.transform.forward, out cast, 3))
+        {
+            if (cast.collider.gameObject.GetComponent<DoorModule>())
+            {
+                DoorModule temp;
+                temp = cast.collider.gameObject.GetComponent<DoorModule>();
+
+                temp.RequestDoorOpen(m_ItemManager.GetKey());
             }
         }
     }

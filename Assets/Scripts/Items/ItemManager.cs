@@ -28,6 +28,8 @@ public class ItemManager : MonoBehaviour
     public float m_maxMouseValue = 12;
     public float m_minMouseValue = 9;
 
+    KeyIdentifier m_Key = null;
+
     void Update()
     {
         if (m_PhysicalObject && m_UsingRotate)
@@ -63,8 +65,13 @@ public class ItemManager : MonoBehaviour
     {
         m_PhysicalObject = _Object;
 
-        m_PhysicalObject.GetComponent<Collider>().enabled = false
-            ;
+        m_PhysicalObject.GetComponent<Collider>().enabled = false;
+
+        if (m_PhysicalObject.gameObject.GetComponent<KeyIdentifier>() != null)
+        {
+            m_Key = m_PhysicalObject.gameObject.GetComponent<KeyIdentifier>();
+        }
+
         if (m_PhysicalObject.gameObject.GetComponent<Rigidbody>() != null)
         {
             m_Rig = m_PhysicalObject.gameObject.GetComponent<Rigidbody>();
@@ -72,10 +79,20 @@ public class ItemManager : MonoBehaviour
         }
     }
 
+    public KeyIdentifier GetKey()
+    {
+        return m_Key;
+    }
+
     public void SetNullObject()
     {
         YVal = 0;
         XVal = 0;
+
+        if (m_Key)
+        {
+            m_Key = null;
+        }
 
         m_Rig.isKinematic = false;
         m_PhysicalObject.GetComponent<Collider>().enabled = true;
