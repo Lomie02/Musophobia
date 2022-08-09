@@ -51,7 +51,7 @@ public class InputManager : MonoBehaviour
             }
         }
 
-        if (Input.GetKeyDown(KeyCode.G))
+        if (Input.GetKeyDown(KeyCode.G) && m_HoldingItem)
         {
             CycleMode();
         }
@@ -101,7 +101,10 @@ public class InputManager : MonoBehaviour
                 DoorModule temp;
                 temp = cast.collider.gameObject.GetComponent<DoorModule>();
 
-                temp.RequestDoorOpen(m_ItemManager.GetKey());
+                if (temp.RequestDoorOpen(m_ItemManager.GetKey()))
+                {
+                    ClearKey();
+                }
             }
         }
     }
@@ -138,6 +141,22 @@ public class InputManager : MonoBehaviour
         if (m_HoldingItem)
         {
             m_ItemManager.SetNullObject();
+
+            m_Ray.collider.gameObject.transform.parent = null;
+            m_ItemManager.ClearVectors();
+            m_HoldingItem = false;
+        }
+        else
+        {
+            m_HoldingItem = true;
+        }
+    }
+
+    private void ClearKey()
+    {
+        if (m_HoldingItem)
+        {
+            m_ItemManager.DeleteItem();
 
             m_Ray.collider.gameObject.transform.parent = null;
             m_ItemManager.ClearVectors();

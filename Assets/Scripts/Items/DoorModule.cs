@@ -22,9 +22,9 @@ public class DoorModule : MonoBehaviour
     bool m_IsLocked = true;
     HingeJoint m_DoorJoint;
 
-    public void RequestDoorOpen(KeyIdentifier _Id)
+    public bool RequestDoorOpen(KeyIdentifier _Id)
     {
-        if (_Id == null) { return; }
+        if (_Id == null) { return false; }
 
         if (m_IsLocked && _Id.GetKeyID() == m_DoorId)
         {
@@ -35,6 +35,8 @@ public class DoorModule : MonoBehaviour
             {
                 m_OnDoorUnlocked.Invoke();
             }
+
+            return true;
         }
         else
         {
@@ -42,7 +44,7 @@ public class DoorModule : MonoBehaviour
             {
                 m_OnIncorrectKey.Invoke();
             }
-            return;
+            return false;
         }
     }
 

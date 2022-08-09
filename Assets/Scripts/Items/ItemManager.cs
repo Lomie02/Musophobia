@@ -29,6 +29,7 @@ public class ItemManager : MonoBehaviour
     public float m_minMouseValue = 9;
 
     KeyIdentifier m_Key = null;
+    bool m_HoldingItem;
 
     void Update()
     {
@@ -70,6 +71,7 @@ public class ItemManager : MonoBehaviour
         if (m_PhysicalObject.gameObject.GetComponent<KeyIdentifier>() != null)
         {
             m_Key = m_PhysicalObject.gameObject.GetComponent<KeyIdentifier>();
+            m_PhysicalObject.gameObject.GetComponent<Renderer>().enabled = false;
         }
 
         if (m_PhysicalObject.gameObject.GetComponent<Rigidbody>() != null)
@@ -91,6 +93,7 @@ public class ItemManager : MonoBehaviour
 
         if (m_Key)
         {
+            m_PhysicalObject.gameObject.GetComponent<Renderer>().enabled = true;
             m_Key = null;
         }
 
@@ -99,6 +102,13 @@ public class ItemManager : MonoBehaviour
 
         m_Rig = null;
         m_PhysicalObject = null;
+    }
+
+    public void DeleteItem()
+    {
+        Destroy(m_PhysicalObject);
+        m_Key = null;
+        m_Rig = null;
     }
 
     public void ClearVectors()
