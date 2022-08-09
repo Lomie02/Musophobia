@@ -40,6 +40,7 @@ public class InputManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.E))
         {
             SearchForDoor();
+            SearchDrawer();
 
             if (!m_HoldingItem)
             {
@@ -105,6 +106,21 @@ public class InputManager : MonoBehaviour
                 {
                     ClearKey();
                 }
+            }
+        }
+    }
+
+    void SearchDrawer()
+    {
+        RaycastHit cast;
+
+        if (Physics.Raycast(m_PlayerView.transform.position, m_PlayerView.transform.forward, out cast, 3))
+        {
+            if (cast.collider.gameObject.GetComponent<DrawerModule>())
+            {
+                DrawerModule temp;
+                temp = cast.collider.gameObject.GetComponent<DrawerModule>();
+                temp.CycleState();
             }
         }
     }
