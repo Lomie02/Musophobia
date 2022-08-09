@@ -8,10 +8,8 @@ public class AIModule : MonoBehaviour
 {
     enum EnemyStates
     {
-        IDLE = 0,
-        ROAM,
+        ROAM = 0,
         CHASE,
-        NOISE,
     }
 
     enum PlayerSearch
@@ -19,7 +17,6 @@ public class AIModule : MonoBehaviour
         MANUAL = 0,
         TAG,
     }
-
 
     //===========================================
 
@@ -29,13 +26,12 @@ public class AIModule : MonoBehaviour
     [SerializeField, Tooltip("Tag to search for. (Requires TAG setting.)")] string m_SearchTag = "Player";
     [SerializeField, Tooltip("The AI will treat this object as the player.")] GameObject m_Player;
 
-    [Space]
-
+    [Header("Detection")]
     [SerializeField, Tooltip("Cooldown bewteen random path finding.")] float m_WonderTime = 5f;
     float m_WonderTimer = 0;
-
     [SerializeField, Tooltip("How far the AI can see.")] float m_SearchDistance = 10f;
-    [SerializeField, Tooltip("NOTE: Changing this will affect the AI path finding!")] LayerMask m_SearchLayer;
+
+    [SerializeField, Tooltip("NOTE: Changing this will affect the AI path finding!"), Space()] LayerMask m_SearchLayer;
 
     [Header("Movement")]
     [SerializeField, Range(3, 50),Tooltip("The speed the AI will roam at.")] float m_RoamSpeed = 1f;
@@ -50,6 +46,13 @@ public class AIModule : MonoBehaviour
     EnemyStates m_AiStates = EnemyStates.ROAM;
     float m_InterestTimer;
 
+    //======================================= Locomotion script
+
+    [SerializeField] Animator m_Animator;
+    Vector2 m_Velocity = Vector2.zero;
+    Vector2 m_SmooothDeltaPosition = Vector2.zero;
+    
+    //======================================= externals
     InputManager m_Input;
     GameManger m_GameManger;
     bool m_IsChasing = false;
@@ -69,6 +72,7 @@ public class AIModule : MonoBehaviour
             }
         }
 
+        //m_NavMeshAgent.updatePosition = false;
         m_Input = FindObjectOfType<InputManager>();
 
         m_NavMeshAgent = GetComponent<NavMeshAgent>();
@@ -93,9 +97,6 @@ public class AIModule : MonoBehaviour
     {
         switch (m_AiStates)
         {
-            case EnemyStates.IDLE:
-                break;
-
             case EnemyStates.ROAM:
                 SeekArea();
                 break;
@@ -103,12 +104,40 @@ public class AIModule : MonoBehaviour
             case EnemyStates.CHASE:
                 ChasePlayer();
                 break;
+        }
+        //UpdateNav();
+        DistanceCheck();
+    }
 
-            case EnemyStates.NOISE:
-                break;
+    void UpdateNav()
+    {
+        Vector3 worldDeltaPosition = m_NavMeshAgent.nextPosition - transform.position;
+
+        float dx = Vector3.Dot(transform.right, worldDeltaPosition);
+        float dy = Vector3.Dot(transform.forward, worldDeltaPosition);
+
+        Vector2 deltaPosition = new Vector2(dx, dy);
+
+        float smooth = Mathf.Min(1.0f, Time.deltaTime);
+        m_SmooothDeltaPosition = Vector2.Lerp(m_SmooothDeltaPosition, deltaPosition, smooth);
+
+        if(Time.deltaTime > 1e-5f)
+        {
+            m_Velocity = m_SmooothDeltaPosition / Time.deltaTime;
         }
 
-        DistanceCheck();
+        bool shouldMove = m_Velocity.magnitude > 0.5f && m_NavMeshAgent.remainingDistance > m_NavMeshAgent.radius;
+
+        m_Animator.SetBool("Bool", shouldMove);
+        m_Animator.SetFloat("velx", m_Velocity.x);
+        m_Animator.SetFloat("vely", m_Velocity.y);
+
+        //GetComponent<LookAt>().lookAtTargetPosition = m_NavMeshAgent.steeringTarget + transform.forward;
+    }
+
+    private void OnAnimatorMove()
+    {
+        transform.position = m_NavMeshAgent.nextPosition;
     }
 
     void ChasePlayer()
@@ -143,7 +172,7 @@ public class AIModule : MonoBehaviour
             {
                 if (deathCast.collider.tag == "Player")
                 {
-                    m_GameManger.ChangeScene("GameOver");
+                    m_GameManger.ChangeScene(m_GameManger.GetGameOverName());
                 }
             }
         }

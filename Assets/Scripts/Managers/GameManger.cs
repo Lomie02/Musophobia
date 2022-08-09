@@ -11,14 +11,25 @@ public class GameManger : MonoBehaviour
         ENABLED = 0,
         DISABLED,
     }
+    
+    //======================================================
 
     [SerializeField, Tooltip("When enabled the user can press the Esc key to quit the game.")] bool m_UseQuit = false;
     [SerializeField, Tooltip("Called when game quits.")] UnityEvent m_OnQuit = null;
 
     [SerializeField, Tooltip("When enabled the mouse cursor will get fixed at the start of the frame.")] AutoFixMouse m_AutoFixMouse = AutoFixMouse.DISABLED;
 
-    PauseManager m_PauseManager = null;
+    [Header("Scene Changes")]
 
+    //======================================================
+
+    [SerializeField] string m_MainMenuScreen = "MainMenu";
+    [SerializeField] string m_WinScreen = "WinScreen";
+    [SerializeField] string m_GameOverScreen = "GameOver";
+
+    //======================================================
+
+    PauseManager m_PauseManager = null;
 
     private void Start()
     {
@@ -30,6 +41,7 @@ public class GameManger : MonoBehaviour
             Cursor.visible = true;
         }
     }
+
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Escape) && m_UseQuit)
@@ -57,5 +69,20 @@ public class GameManger : MonoBehaviour
     public void QuitGame()
     {
         Application.Quit();
+    }
+
+    public string GetGameOverName()
+    {
+        return m_GameOverScreen;
+    }
+
+    public string GetMainMenuScreen()
+    {
+        return m_MainMenuScreen;
+    }
+
+    public string GetWinScreen()
+    {
+        return m_WinScreen;
     }
 }
