@@ -12,11 +12,11 @@ public class ItemManager : MonoBehaviour
 
     [Header("Rotation")]
     public float m_RotateSpeed = 12;
-    public float XVal = 0;
-    public float YVal = 0;
+    float XVal = 0;
+    float YVal = 0;
 
-    public Transform m_ItemBox = null;
     [Header("Item Box")]
+    public Transform m_ItemBox = null;
     ItemIdentifier m_ItemIdentifier = null;
 
     public Vector3 m_DefaultPosition = Vector3.zero;
