@@ -6,15 +6,16 @@ public class ItemManager : MonoBehaviour
 {
     [Header("General")]
     public bool m_UsingRotate = false;
-    public GameObject m_PhysicalObject = null;
-    public Rigidbody m_Rig = null;
+    public GameObject[] m_PhysicalObject;
+    public int m_CurrentSlot = 0;
+    public Rigidbody[] m_Rig = null;
 
     [Header("Rotation")]
     public float m_RotateSpeed = 12;
     public float XVal = 0;
     public float YVal = 0;
 
-    Transform m_ItemBox = null;
+    public Transform m_ItemBox = null;
     [Header("Item Box")]
     ItemIdentifier m_ItemIdentifier = null;
 
@@ -31,17 +32,25 @@ public class ItemManager : MonoBehaviour
     KeyIdentifier m_Key = null;
     bool m_HoldingItem;
 
+    void Start()
+    {
+        m_PhysicalObject = new GameObject[3];
+        m_Rig = new Rigidbody[m_PhysicalObject.Length];
+
+        m_ItemBox.localPosition = m_DefaultPosition;
+    }
+
     void Update()
     {
-        if (m_PhysicalObject && m_UsingRotate)
+        if (m_PhysicalObject[m_CurrentSlot] && m_UsingRotate)
         {
             float MX = Input.GetAxis("Mouse X") * m_RotateSpeed * Time.deltaTime;
             float MY = Input.GetAxis("Mouse Y") * m_RotateSpeed * Time.deltaTime;
 
-            XVal += MX;
-            YVal -= MY;
+            XVal = MY;
+            YVal = MX;
 
-            m_PhysicalObject.transform.Rotate(XVal, YVal, 0);
+            m_PhysicalObject[m_CurrentSlot].transform.Rotate(XVal, YVal, 0);
             float XM = Input.mouseScrollDelta.y * m_ScrollSpeed * Time.deltaTime;
 
             m_MouseWheelValue += XM;
@@ -49,6 +58,10 @@ public class ItemManager : MonoBehaviour
 
             m_ItemBoxPreview.z = m_MouseWheelValue;
             m_ItemBox.localPosition = m_ItemBoxPreview;
+        }
+        else
+        {
+            m_ItemBox.localPosition = m_DefaultPosition;
         }
     }
 
@@ -64,20 +77,52 @@ public class ItemManager : MonoBehaviour
 
     public void SetObject(GameObject _Object)
     {
-        m_PhysicalObject = _Object;
+        m_PhysicalObject[m_CurrentSlot] = _Object;
 
-        m_PhysicalObject.GetComponent<Collider>().enabled = false;
+        m_PhysicalObject[m_CurrentSlot].GetComponent<Collider>().enabled = false;
 
-        if (m_PhysicalObject.gameObject.GetComponent<KeyIdentifier>() != null)
+        if (m_PhysicalObject[m_CurrentSlot].gameObject.GetComponent<KeyIdentifier>() != null)
         {
-            m_Key = m_PhysicalObject.gameObject.GetComponent<KeyIdentifier>();
-            m_PhysicalObject.gameObject.GetComponent<Renderer>().enabled = false;
+            m_Key = m_PhysicalObject[m_CurrentSlot].gameObject.GetComponent<KeyIdentifier>();
+            m_PhysicalObject[m_CurrentSlot].gameObject.GetComponent<Renderer>().enabled = false;
         }
 
-        if (m_PhysicalObject.gameObject.GetComponent<Rigidbody>() != null)
+        if (m_PhysicalObject[m_CurrentSlot].gameObject.GetComponent<Rigidbody>() != null)
         {
-            m_Rig = m_PhysicalObject.gameObject.GetComponent<Rigidbody>();
-            m_Rig.isKinematic = true;
+            m_Rig[m_CurrentSlot] = m_PhysicalObject[m_CurrentSlot].gameObject.GetComponent<Rigidbody>();
+            m_Rig[m_CurrentSlot].isKinematic = true;
+        }
+    }
+
+    public void CycleSlots()
+    {
+        if (m_PhysicalObject[m_CurrentSlot] != null)
+        {
+            m_PhysicalObject[m_CurrentSlot].gameObject.SetActive(false);
+        }
+
+        m_CurrentSlot++;
+
+        if (m_CurrentSlot >= m_PhysicalObject.Length)
+        {
+            m_CurrentSlot = 0;
+        }
+
+        if (m_PhysicalObject[m_CurrentSlot] != null)
+        {
+            m_PhysicalObject[m_CurrentSlot].gameObject.SetActive(true);
+        }
+    }
+
+    public bool GetCurrentSlot()
+    {
+        if (m_PhysicalObject[m_CurrentSlot] != null)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
         }
     }
 
@@ -93,20 +138,21 @@ public class ItemManager : MonoBehaviour
 
         if (m_Key)
         {
-            m_PhysicalObject.gameObject.GetComponent<Renderer>().enabled = true;
+            m_PhysicalObject[m_CurrentSlot].gameObject.GetComponent<Renderer>().enabled = true;
             m_Key = null;
         }
 
-        m_Rig.isKinematic = false;
-        m_PhysicalObject.GetComponent<Collider>().enabled = true;
+        m_Rig[m_CurrentSlot].isKinematic = false;
+        m_PhysicalObject[m_CurrentSlot].GetComponent<Collider>().enabled = true;
 
-        m_Rig = null;
-        m_PhysicalObject = null;
+        m_PhysicalObject[m_CurrentSlot].transform.parent = null;
+        m_Rig[m_CurrentSlot] = null;
+        m_PhysicalObject[m_CurrentSlot] = null;
     }
 
     public void DeleteItem()
     {
-        Destroy(m_PhysicalObject);
+        Destroy(m_PhysicalObject[m_CurrentSlot]);
         m_Key = null;
         m_Rig = null;
     }
