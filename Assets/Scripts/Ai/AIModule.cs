@@ -108,7 +108,7 @@ public class AIModule : MonoBehaviour
         //UpdateNav();
         DistanceCheck();
     }
-
+    
     void UpdateNav()
     {
         Vector3 worldDeltaPosition = m_NavMeshAgent.nextPosition - transform.position;

@@ -6,6 +6,7 @@ TagManager:
   tags:
   - ExitDoor
   - Item
+  - Door
   layers:
   - Default
   - TransparentFX

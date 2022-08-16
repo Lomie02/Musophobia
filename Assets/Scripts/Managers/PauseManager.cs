@@ -7,17 +7,33 @@ public class PauseManager : MonoBehaviour
 {
     [Header("General")]
     [SerializeField, Tooltip("The panel that will be used as the pause menu.")] Image m_PausePanel = null;
+
+    [SerializeField] Slider m_MouseSlider;
+    [SerializeField] Slider m_FieldOfViewSlider;
+
     PlayerCamera m_Player;
     AudioSource[] m_PausedAudioSource = null;
-
+    
     bool m_IsPaused = false;
+    DataSystem m_DataSystem;
+
     void Start()
     {
         m_PausedAudioSource = FindObjectsOfType<AudioSource>();
         m_Player = FindObjectOfType<PlayerCamera>();
 
+        m_DataSystem = GetComponent<DataSystem>();
         SetPausePanel(m_IsPaused);
         SetAudioSources(m_IsPaused);
+
+        if (m_FieldOfViewSlider)
+        {
+            m_FieldOfViewSlider.value = m_Player.GetFieldOfView();
+        }
+        if (m_MouseSlider)
+        {
+            m_MouseSlider.value = m_Player.GetMouseSens();
+        }
     }
 
     public void SetPauseState(bool _state)
@@ -25,6 +41,32 @@ public class PauseManager : MonoBehaviour
         m_IsPaused = _state;
         SetPausePanel(m_IsPaused);
         SetAudioSources(m_IsPaused);
+    }
+
+    public void FreezeWorld()
+    {
+        Time.timeScale = 0;
+    }
+
+    public void UnFreeze()
+    {
+        Time.timeScale = 1;
+    }
+
+    public void ChangeFov()
+    {
+        m_Player.SetFieldOfView(m_FieldOfViewSlider.value);
+    }
+
+    public void ChangeMouse()
+    {
+        m_Player.SetMouseSens(m_MouseSlider.value);
+    }
+
+    public void SaveSettings()
+    {
+        m_DataSystem.SetMouseSens(m_MouseSlider.value);
+        m_DataSystem.SetFieldOfView(m_FieldOfViewSlider.value);
     }
 
     void SetAudioSources(bool _state)

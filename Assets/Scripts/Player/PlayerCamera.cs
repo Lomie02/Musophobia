@@ -33,6 +33,8 @@ public class PlayerCamera : MonoBehaviour
     bool m_IsCursorShowing = false;
 
     Transform m_Camera = null;
+    float m_FieldOfView = 80f;
+
     void Start()
     {
         m_Camera = GetComponent<Transform>();
@@ -135,5 +137,26 @@ public class PlayerCamera : MonoBehaviour
             m_IsCursorShowing = true;
             SetCrouchState(m_IsCursorShowing);
         }
+    }
+
+    public void SetFieldOfView(float _amount)
+    {
+        m_FieldOfView = _amount;
+        Camera.main.fieldOfView = m_FieldOfView;
+    }
+
+    public float GetFieldOfView()
+    {
+        return m_FieldOfView;
+    }
+
+    public void SetMouseSens(float _amount)
+    {
+        m_Sensitivity = _amount;
+    }
+
+    public float GetMouseSens()
+    {
+        return m_Sensitivity;
     }
 }
