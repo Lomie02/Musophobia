@@ -14,7 +14,7 @@ public class GameManger : MonoBehaviour
 
     //======================================================
 
-    [SerializeField] bool m_UseSaving = true;
+    [SerializeField, Tooltip("Enable only in main game.")] bool m_UseSaving = true;
     [SerializeField, Tooltip("When enabled the user can press the Esc key to quit the game.")] bool m_UseQuit = false;
     [SerializeField, Tooltip("Called when game quits.")] UnityEvent m_OnQuit = null;
 
@@ -24,9 +24,9 @@ public class GameManger : MonoBehaviour
 
     //======================================================
 
-    [SerializeField] string m_MainMenuScreen = "MainMenu";
-    [SerializeField] string m_WinScreen = "WinScreen";
-    [SerializeField] string m_GameOverScreen = "GameOver";
+    [SerializeField, Tooltip("Main menu scene")] string m_MainMenuScreen = "MainMenu";
+    [SerializeField, Tooltip("Win Screen")] string m_WinScreen = "WinScreen";
+    [SerializeField, Tooltip("Game Over scene")] string m_GameOverScreen = "GameOver";
 
     //======================================================
 
@@ -39,6 +39,11 @@ public class GameManger : MonoBehaviour
         m_PauseManager = GetComponent<PauseManager>();
         m_DataSystem = GetComponent<DataSystem>();
         m_PlayerCamera = FindObjectOfType<PlayerCamera>();
+
+        if (!m_PlayerCamera)
+        {
+            m_UseSaving = false;
+        }
 
         if (m_AutoFixMouse == AutoFixMouse.ENABLED)
         {
@@ -93,6 +98,11 @@ public class GameManger : MonoBehaviour
 
     public void QuitGame()
     {
+        if (m_OnQuit != null)
+        {
+            m_OnQuit.Invoke();
+        }
+
         Application.Quit();
     }
 
