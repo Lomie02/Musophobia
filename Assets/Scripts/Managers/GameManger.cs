@@ -11,9 +11,10 @@ public class GameManger : MonoBehaviour
         ENABLED = 0,
         DISABLED,
     }
-    
+
     //======================================================
 
+    [SerializeField] bool m_UseSaving = true;
     [SerializeField, Tooltip("When enabled the user can press the Esc key to quit the game.")] bool m_UseQuit = false;
     [SerializeField, Tooltip("Called when game quits.")] UnityEvent m_OnQuit = null;
 
@@ -30,15 +31,39 @@ public class GameManger : MonoBehaviour
     //======================================================
 
     PauseManager m_PauseManager = null;
+    DataSystem m_DataSystem = null;
 
+    PlayerCamera m_PlayerCamera = null;
     private void Start()
     {
         m_PauseManager = GetComponent<PauseManager>();
+        m_DataSystem = GetComponent<DataSystem>();
+        m_PlayerCamera = FindObjectOfType<PlayerCamera>();
 
         if (m_AutoFixMouse == AutoFixMouse.ENABLED)
         {
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
+        }
+
+        if (m_DataSystem != null && m_UseQuit)
+        {
+            SetupValues();
+        }
+    }
+
+    public void SetupValues()
+    {
+        if (m_PlayerCamera)
+        {
+            if (m_DataSystem.GetFieldOfView() != 0)
+            {
+                m_PlayerCamera.SetFieldOfView(m_DataSystem.GetFieldOfView());
+            }
+            if (m_DataSystem.GetMouseSens() != 0)
+            {
+                m_PlayerCamera.SetMouseSens(m_DataSystem.GetMouseSens());
+            }
         }
     }
 

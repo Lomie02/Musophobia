@@ -13,7 +13,6 @@ public class InputManager : MonoBehaviour
     [SerializeField] UnityEvent m_LighterOff;
 
     ItemManager m_ItemManager;
-    RaycastHit m_Ray;
     [SerializeField] Transform m_ItemBox;
 
     bool m_HoldingItem;
@@ -21,6 +20,7 @@ public class InputManager : MonoBehaviour
     GameManger m_GameManger;
 
     bool m_CandleOn = true;
+    bool m_IsInspecting = false;
 
     private void Start()
     {
@@ -37,49 +37,64 @@ public class InputManager : MonoBehaviour
         {
             CycleCandle();
         }
+
+        if (Input.GetKeyDown(KeyCode.R) && m_ItemManager.GetCurrentSlot())
+        {
+            CycleInspect();
+        }
+
         if (Input.GetKeyDown(KeyCode.E))
         {
             SearchForDoor();
             SearchDrawer();
 
-            if (!m_HoldingItem)
+            SearchKeyDoor();
+            SearchForNote();
+
+            if (!m_ItemManager.GetCurrentSlot())
             {
                 Searchitem();
             }
-            else
+        }
+
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            m_ItemManager.CycleSlots();
+        }
+
+        if (Input.GetKeyDown(KeyCode.G) && m_ItemManager.GetCurrentSlot())
+        {
+            if (m_IsInspecting)
             {
-                SearchKeyDoor();
+                m_IsInspecting = false;
+                m_PlayerView.SetPlayerState(true);
+                m_ItemManager.SetUsingState(false);
             }
-        }
 
-        if (Input.GetKeyDown(KeyCode.G) && m_HoldingItem)
-        {
-            CycleMode();
-        }
+            m_ItemManager.SetNullObject();
 
-        if (m_HoldingItem)
-        {
-            m_Ray.collider.gameObject.transform.position = m_ItemBox.position;
-            m_Ray.collider.gameObject.transform.parent = m_ItemBox;
+            m_ItemManager.ClearVectors();
         }
     }
 
     public void Searchitem()
     {
-        if (Physics.Raycast(m_PlayerView.transform.position, m_PlayerView.transform.forward, out m_Ray, 5))
+        RaycastHit cast;
+        if (Physics.Raycast(m_PlayerView.transform.position, m_PlayerView.transform.forward, out cast, 5))
         {
-            if (m_Ray.collider.tag == "Item")
+            if (cast.collider.tag == "Item")
             {
-                m_HoldingItem = true;
-                m_Ray.collider.transform.forward = m_ItemBox.forward;
-                m_Ray.collider.gameObject.transform.position = m_ItemBox.position;
+                cast.collider.gameObject.transform.parent = null;
+                cast.collider.transform.forward = m_ItemBox.forward;
 
+                cast.collider.gameObject.transform.position = m_ItemBox.position;
+                cast.collider.gameObject.transform.parent = m_ItemBox;
 
-                m_ItemManager.SetObject(m_Ray.collider.gameObject);
+                m_ItemManager.SetObject(cast.collider.gameObject);
             }
         }
     }
-     void SearchForDoor()
+    void SearchForDoor()
     {
         RaycastHit cast;
 
@@ -91,7 +106,7 @@ public class InputManager : MonoBehaviour
             }
         }
     }
-     void SearchKeyDoor()
+    void SearchKeyDoor()
     {
         RaycastHit cast;
 
@@ -106,6 +121,22 @@ public class InputManager : MonoBehaviour
                 {
                     ClearKey();
                 }
+            }
+        }
+    }
+
+    void SearchForNote()
+    {
+        RaycastHit cast;
+
+        if (Physics.Raycast(m_PlayerView.transform.position, m_PlayerView.transform.forward, out cast, 3))
+        {
+            if (cast.collider.gameObject.GetComponent<NoteIdentifier>())
+            {
+                NoteIdentifier temp;
+                temp = cast.collider.gameObject.GetComponent<NoteIdentifier>();
+
+                temp.ReadNote();
             }
         }
     }
@@ -152,15 +183,13 @@ public class InputManager : MonoBehaviour
         return m_CandleOn;
     }
 
-    private void CycleMode()
+    private void ClearKey()
     {
         if (m_HoldingItem)
         {
-            m_ItemManager.SetNullObject();
+            m_ItemManager.DeleteItem();
 
-            m_Ray.collider.gameObject.transform.parent = null;
             m_ItemManager.ClearVectors();
-            m_HoldingItem = false;
         }
         else
         {
@@ -168,19 +197,19 @@ public class InputManager : MonoBehaviour
         }
     }
 
-    private void ClearKey()
+    void CycleInspect()
     {
-        if (m_HoldingItem)
+        if (m_IsInspecting)
         {
-            m_ItemManager.DeleteItem();
-
-            m_Ray.collider.gameObject.transform.parent = null;
-            m_ItemManager.ClearVectors();
-            m_HoldingItem = false;
+            m_PlayerView.SetPlayerState(true);
+            m_ItemManager.SetUsingState(false);
+            m_IsInspecting = false;
         }
         else
         {
-            m_HoldingItem = true;
+            m_PlayerView.SetPlayerState(false);
+            m_ItemManager.SetUsingState(true);
+            m_IsInspecting = true;
         }
     }
 }
