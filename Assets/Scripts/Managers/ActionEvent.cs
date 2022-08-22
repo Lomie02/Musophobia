@@ -7,10 +7,12 @@ public class ActionEvent : MonoBehaviour
 {
     [SerializeField] string m_Tag = "Player";
     [SerializeField] UnityEvent m_OnEnter;
+
     GameObject m_gameObject;
+
     private void Start()
     {
-        m_gameObject = GetComponent<GameObject>();
+        m_gameObject = gameObject.transform.parent.gameObject.GetComponent<GameObject>();
     }
 
     public void OnTriggerEnter(Collider other)
@@ -20,9 +22,8 @@ public class ActionEvent : MonoBehaviour
             if (m_OnEnter != null)
             {
                 m_OnEnter.Invoke();
-                m_gameObject.SetActive(false);
+                Destroy(m_gameObject);
             }
         }
     }
-
 }
