@@ -7,6 +7,7 @@ TagManager:
   - ExitDoor
   - Item
   - Door
+  - AI
   layers:
   - Default
   - TransparentFX
