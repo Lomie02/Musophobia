@@ -511,11 +511,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_UsingRotate: 0
-  m_PhysicalObject: {fileID: 0}
-  m_Rig: {fileID: 0}
+  m_PhysicalObject:
+  - {fileID: 0}
+  m_CurrentSlot: 0
+  m_Rig:
+  - {fileID: 0}
   m_RotateSpeed: 12
   XVal: 0
   YVal: 0
+  m_ItemBox: {fileID: 0}
   m_DefaultPosition: {x: 0.2, y: -0.195, z: 0.34}
   m_ItemBoxPreview: {x: 0, y: 0, z: 0}
   m_MouseWheelValue: 0
