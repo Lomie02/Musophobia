@@ -197,8 +197,6 @@ public class InputManager : MonoBehaviour
         }
     }
 
-    //TODO items that can be picked up.
-
     void SetCandle(bool _state)
     {
         m_CandleOn = _state;

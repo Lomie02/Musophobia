@@ -75,7 +75,7 @@ public class ActionEvent : MonoBehaviour
     void UpdateAnimation()
     {
         m_Timer -= Time.deltaTime;
-        if (m_Timer < 1)
+        if (m_Timer <= 0)
         {
             m_Target.gameObject.SetActive(false);
             m_Timer = m_AnimationClip.length;
