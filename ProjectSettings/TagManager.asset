@@ -8,6 +8,7 @@ TagManager:
   - Item
   - Door
   - AI
+  - Interact
   layers:
   - Default
   - TransparentFX

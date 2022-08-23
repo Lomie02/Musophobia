@@ -22,6 +22,8 @@ public class InputManager : MonoBehaviour
     bool m_CandleOn = true;
     bool m_IsInspecting = false;
 
+    [SerializeField] GameObject m_MessageDrawer = null;
+
     private void Start()
     {
         m_ItemManager = FindObjectOfType<ItemManager>();
@@ -75,6 +77,8 @@ public class InputManager : MonoBehaviour
 
             m_ItemManager.ClearVectors();
         }
+
+        ScanForDrawer();
     }
 
     public void Searchitem()
@@ -152,6 +156,29 @@ public class InputManager : MonoBehaviour
                 DrawerModule temp;
                 temp = cast.collider.gameObject.GetComponent<DrawerModule>();
                 temp.CycleState();
+            }
+        }
+    }
+
+    void ScanForDrawer()
+    {
+        RaycastHit cast;
+
+        if (Physics.Raycast(m_PlayerView.transform.position, m_PlayerView.transform.forward, out cast, 3))
+        {
+            if (cast.collider.gameObject.tag == "Interact")
+            {
+                if (m_MessageDrawer)
+                {
+                    m_MessageDrawer.SetActive(true);
+                }
+            }
+            else
+            {
+                if (m_MessageDrawer)
+                {
+                    m_MessageDrawer.SetActive(false);
+                }
             }
         }
     }

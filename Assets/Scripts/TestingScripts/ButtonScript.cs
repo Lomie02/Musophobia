@@ -10,6 +10,7 @@ public class ButtonScript : MonoBehaviour
     [SerializeField] Sprite[] m_Sprites = new Sprite[2];
     void Start()
     {
+
     }
 
     private void Change()
