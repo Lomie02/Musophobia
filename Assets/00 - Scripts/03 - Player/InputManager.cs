@@ -38,6 +38,10 @@ public class InputManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Mouse1))
         {
             CycleCandle();
+            if (m_ItemManager.GetCurrentSlot())
+            {
+                m_ItemManager.CyclePower();
+            }
         }
 
         if (Input.GetKeyDown(KeyCode.R) && m_ItemManager.GetCurrentSlot())
@@ -50,12 +54,18 @@ public class InputManager : MonoBehaviour
             SearchForDoor();
             SearchDrawer();
 
+            SearchForCandle();
             SearchKeyDoor();
             SearchForNote();
+
 
             if (!m_ItemManager.GetCurrentSlot())
             {
                 Searchitem();
+            }
+            else
+            {
+                m_ItemManager.Use();
             }
         }
 
@@ -125,6 +135,22 @@ public class InputManager : MonoBehaviour
                 {
                     ClearKey();
                 }
+            }
+        }
+    }
+
+    void SearchForCandle()
+    {
+        RaycastHit cast;
+
+        if (Physics.Raycast(m_PlayerView.transform.position, m_PlayerView.transform.forward, out cast, 3))
+        {
+            if (cast.collider.gameObject.GetComponent<CandleIdentifier>())
+            {
+                CandleIdentifier temp;
+                temp = cast.collider.gameObject.GetComponent<CandleIdentifier>();
+
+                temp.LightCandle();
             }
         }
     }
