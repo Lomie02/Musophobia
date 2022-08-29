@@ -74,6 +74,7 @@ public class ActionEvent : MonoBehaviour
 
     void UpdateAnimation()
     {
+
         m_Timer -= Time.deltaTime;
         if (m_Timer <= 0)
         {

@@ -7,10 +7,10 @@ public class LighterModule : MonoBehaviour
     Camera m_Camera;
     void Start()
     {
-        m_Camera = Camera.main;   
+        m_Camera = Camera.main;
     }
 
-    void SearchForCandle()
+    public void SearchForCandle()
     {
         RaycastHit cast;
 
