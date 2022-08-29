@@ -8,6 +8,8 @@ TagManager:
   - Item
   - Door
   - AI
+  - Interact
+  - SlideDoor
   layers:
   - Default
   - TransparentFX
