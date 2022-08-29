@@ -6,21 +6,21 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/Demo/MenuScreen.unity
+    path: Assets/01 - Scenes/00 - Demo/MenuScreen.unity
     guid: 82054087c9d6ff84c8be3613f820258f
   - enabled: 1
-    path: Assets/Scenes/Personal Folders/Dylan/AiTestingScene.unity
+    path: Assets/01 - Scenes/01 - Personal Folders/Dylan/AiTestingScene.unity
     guid: aef7ac049336b59428c01b8fad844231
   - enabled: 0
     path: Assets/Scenes/Demo/DemoScene.unity
     guid: 9fc0d4010bbf28b4594072e72b8655ab
   - enabled: 1
-    path: Assets/Scenes/Demo/GameOver.unity
+    path: Assets/01 - Scenes/00 - Demo/GameOver.unity
     guid: 56feca3141577f1409f87d778c538227
   - enabled: 1
-    path: Assets/Scenes/Demo/Escaped.unity
+    path: Assets/01 - Scenes/00 - Demo/Escaped.unity
     guid: 3aff2051ce222f54c913695c45eb2388
   - enabled: 1
-    path: Assets/Scenes/Demo/Overview.unity
+    path: Assets/01 - Scenes/00 - Demo/Overview.unity
     guid: cc41939cea623f947bb392d4e14047c9
   m_configObjects: {}
