@@ -16,6 +16,7 @@ public class ItemIdentifier : MonoBehaviour
     {
         if (m_OnUse != null && m_OnState)
         {
+            Debug.Log("Use");
             m_OnUse.Invoke();
         }
     }
@@ -24,6 +25,7 @@ public class ItemIdentifier : MonoBehaviour
     {
         if (m_TurnOn != null)
         {
+            Debug.Log("On");
             m_TurnOn.Invoke();
         }
     }
@@ -32,6 +34,7 @@ public class ItemIdentifier : MonoBehaviour
     {
         if (m_TurnOff != null)
         {
+            Debug.Log("Off");
             m_TurnOff.Invoke();
         }
     }

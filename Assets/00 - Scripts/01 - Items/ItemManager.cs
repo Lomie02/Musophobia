@@ -81,10 +81,8 @@ public class ItemManager : MonoBehaviour
 
         m_PhysicalObject[m_CurrentSlot].GetComponent<Collider>().enabled = false;
 
-        if (m_PhysicalObject[m_CurrentSlot].GetComponent<ItemIdentifier>() != null)
-        {
-            m_ItemIdentifier = m_PhysicalObject[m_CurrentSlot].GetComponent<ItemIdentifier>();
-        }
+
+        m_ItemIdentifier = _Object.GetComponent<ItemIdentifier>();
 
         if (m_PhysicalObject[m_CurrentSlot].gameObject.GetComponent<KeyIdentifier>() != null)
         {

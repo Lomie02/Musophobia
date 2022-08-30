@@ -4,23 +4,41 @@ using UnityEngine;
 
 public class LighterModule : MonoBehaviour
 {
-    Camera m_Camera;
-    void Start()
+    [SerializeField] Camera m_Camera;
+
+    bool m_IsOn = false;
+    public void TurnOn()
     {
-        m_Camera = Camera.main;
+        if (!m_IsOn)
+        {
+            Debug.Log("On");
+            m_IsOn = true;
+        }
+    }
+
+    public void TurnOff()
+    {
+        if (m_IsOn)
+        {
+            Debug.Log("Off");
+            m_IsOn = false;
+        }
     }
 
     public void SearchForCandle()
     {
+        if (!m_IsOn)
+        {
+            return;
+        }
+
         RaycastHit cast;
 
-        if (Physics.Raycast(m_Camera.transform.position, m_Camera.transform.forward, out cast, 3))
+        if (Physics.Raycast(m_Camera.transform.position, m_Camera.transform.forward, out cast, 4))
         {
-            if (cast.collider.gameObject.GetComponent<CandleIdentifier>())
+            if (cast.collider.GetComponent<CandleIdentifier>() != null)
             {
-                CandleIdentifier temp;
-                temp = cast.collider.gameObject.GetComponent<CandleIdentifier>();
-
+                CandleIdentifier temp = cast.collider.gameObject.GetComponent<CandleIdentifier>();
                 temp.LightCandle();
             }
         }
