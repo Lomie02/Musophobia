@@ -392,6 +392,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_ItemBox: {fileID: 3679073728340710678}
+  m_MessageDrawer: {fileID: 0}
 --- !u!114 &5564839779915919316
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -411,8 +412,6 @@ MonoBehaviour:
   m_Rig:
   - {fileID: 0}
   m_RotateSpeed: 12
-  XVal: 0
-  YVal: 0
   m_ItemBox: {fileID: 0}
   m_DefaultPosition: {x: 0.2, y: -0.195, z: 0.34}
   m_ItemBoxPreview: {x: 0, y: 0, z: 0}
