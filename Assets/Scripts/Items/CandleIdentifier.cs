@@ -6,7 +6,6 @@ using UnityEngine.Events;
 public class CandleIdentifier : MonoBehaviour
 {
     [SerializeField] float m_Duration = 15f;
-    [SerializeField] Light m_CandleLight = null;
 
     [SerializeField] UnityEvent m_OnLit;
     [SerializeField] UnityEvent m_OnBlow;
@@ -14,10 +13,6 @@ public class CandleIdentifier : MonoBehaviour
     float m_Timer = 0;
     bool m_IsLit = false;
 
-    private void Start()
-    {
-        m_CandleLight.gameObject.SetActive(false);
-    }
     void FixedUpdate()
     {
         if (m_IsLit)
@@ -25,15 +20,11 @@ public class CandleIdentifier : MonoBehaviour
             m_Timer += Time.deltaTime;
             if (m_Timer > m_Duration)
             {
-                if (m_CandleLight)
-                {
-                    m_CandleLight.gameObject.SetActive(false);
-                }
-
                 if (m_OnBlow != null)
                 {
                     m_OnBlow.Invoke();
                 }
+                m_IsLit = false;
                 m_Timer = 0;
             }
         }
@@ -43,7 +34,6 @@ public class CandleIdentifier : MonoBehaviour
     {
         if (!m_IsLit)
         {
-            m_CandleLight.gameObject.SetActive(true);
             m_OnLit.Invoke();
             m_IsLit = true;
         }

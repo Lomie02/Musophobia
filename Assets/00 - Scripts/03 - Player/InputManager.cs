@@ -5,9 +5,6 @@ using UnityEngine.Events;
 
 public class InputManager : MonoBehaviour
 {
-    [Header("General")]
-    [SerializeField, Tooltip("Object to act as a ligher")] GameObject m_LighterObject;
-
     [Header("Lighter Events")]
     [SerializeField] UnityEvent m_LighterOn;
     [SerializeField] UnityEvent m_LighterOff;
@@ -19,7 +16,7 @@ public class InputManager : MonoBehaviour
     PlayerCamera m_PlayerView;
     GameManger m_GameManger;
 
-    bool m_CandleOn = true;
+    bool m_CandleOn = false;
     bool m_IsInspecting = false;
 
     [SerializeField] GameObject m_MessageDrawer = null;
@@ -59,7 +56,6 @@ public class InputManager : MonoBehaviour
             SearchForDoor();
             SearchDrawer();
 
-            SearchForCandle();
             SearchKeyDoor();
             SearchForNote();
 
@@ -224,12 +220,6 @@ public class InputManager : MonoBehaviour
             m_LighterOn.Invoke();
             m_CandleOn = true;
         }
-    }
-
-    void SetCandle(bool _state)
-    {
-        m_CandleOn = _state;
-        m_LighterObject.gameObject.SetActive(_state);
     }
 
     public bool GetCandleState()
