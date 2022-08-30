@@ -56,7 +56,6 @@ public class InputManager : MonoBehaviour
             SearchForDoor();
             SearchDrawer();
 
-            SearchForCandle();
             SearchKeyDoor();
             SearchForNote();
 
