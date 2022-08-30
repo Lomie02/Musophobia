@@ -10,6 +10,7 @@ TagManager:
   - AI
   - Interact
   - SlideDoor
+  - Candle
   layers:
   - Default
   - TransparentFX

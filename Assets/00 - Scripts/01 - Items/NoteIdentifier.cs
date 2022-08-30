@@ -38,7 +38,10 @@ public class NoteIdentifier : MonoBehaviour
     {
         if (m_PageDescriptions.Length > 1)
         {
-            m_LeftButton.SetActive(false);
+            if (m_LeftButton)
+            {
+                m_LeftButton.SetActive(false);
+            }
             m_RightButton.SetActive(true);
             
             CheckPlacement();
@@ -46,7 +49,10 @@ public class NoteIdentifier : MonoBehaviour
         }
         else
         {
-            m_LeftButton.SetActive(false);
+            if (m_LeftButton)
+            {
+                m_LeftButton.SetActive(false);
+            }
             m_RightButton.SetActive(false);
             CheckPlacement();
             return false;

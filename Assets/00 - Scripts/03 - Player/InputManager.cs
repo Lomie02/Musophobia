@@ -35,9 +35,14 @@ public class InputManager : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Mouse1))
+        if (Input.GetKeyDown(KeyCode.F))
         {
             CycleCandle();
+
+        }
+
+        if (Input.GetKeyDown(KeyCode.Mouse1))
+        {
             if (m_ItemManager.GetCurrentSlot())
             {
                 m_ItemManager.CyclePower();
@@ -58,15 +63,13 @@ public class InputManager : MonoBehaviour
             SearchKeyDoor();
             SearchForNote();
 
+            m_ItemManager.Use();
 
             if (!m_ItemManager.GetCurrentSlot())
             {
                 Searchitem();
             }
-            else
-            {
-                m_ItemManager.Use();
-            }
+
         }
 
         if (Input.GetKeyDown(KeyCode.Q))
