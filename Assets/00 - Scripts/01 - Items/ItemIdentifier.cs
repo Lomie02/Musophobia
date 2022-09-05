@@ -5,10 +5,16 @@ using UnityEngine.Events;
 
 public class ItemIdentifier : MonoBehaviour
 {
+    [Header("General")]
     [SerializeField] string m_ItemName = "empty";
     [SerializeField] UnityEvent m_TurnOn;
     [SerializeField] UnityEvent m_TurnOff;
     [SerializeField] UnityEvent m_OnUse;
+
+    [Header("Audio")]
+
+    [SerializeField] UnityEvent m_OnPickedUp;
+    [SerializeField] UnityEvent m_OnDroppedItem;
 
     bool m_OnState = false;
 
@@ -51,5 +57,15 @@ public class ItemIdentifier : MonoBehaviour
             TurnOn();
             m_OnState = true;
         }
+    }
+
+    public void PickUpSound()
+    {
+        m_OnPickedUp.Invoke();
+    }
+
+    public void DroppedSound()
+    {
+        m_OnDroppedItem.Invoke();
     }
 }
