@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.Events;
 public class ItemManager : MonoBehaviour
 {
     [Header("General")]
@@ -81,8 +81,8 @@ public class ItemManager : MonoBehaviour
 
         m_PhysicalObject[m_CurrentSlot].GetComponent<Collider>().enabled = false;
 
-
         m_ItemIdentifier = _Object.GetComponent<ItemIdentifier>();
+        m_ItemIdentifier.PickUpSound();
 
         if (m_PhysicalObject[m_CurrentSlot].gameObject.GetComponent<KeyIdentifier>() != null)
         {
@@ -154,6 +154,7 @@ public class ItemManager : MonoBehaviour
             m_Key = null;
         }
 
+        m_ItemIdentifier.DroppedSound();
         m_ItemIdentifier = null;
 
         m_Rig[m_CurrentSlot].isKinematic = false;

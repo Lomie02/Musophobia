@@ -50,7 +50,7 @@ public class DoorModule : MonoBehaviour
         if (m_IsLocked && _Id.GetKeyID() == m_DoorId)
         {
             m_IsLocked = false;
-            m_Barrier.gameObject.SetActive(m_IsLocked);
+            m_Barrier.gameObject.GetComponent<BoxCollider>().enabled = false;
 
             if (m_OnDoorUnlocked != null)
             {
@@ -83,6 +83,12 @@ public class DoorModule : MonoBehaviour
     {
         m_DoorJoint = GetComponent<HingeJoint>();
         Physics.IgnoreCollision(gameObject.GetComponent<Collider>(), m_Barrier);
+
+        if (m_Barrier)
+        {
+            Physics.IgnoreCollision(gameObject.GetComponent<Collider>(), m_Barrier.GetComponent<Collider>());
+        }
+
 
         if (m_LockedStart)
         {
@@ -123,21 +129,24 @@ public class DoorModule : MonoBehaviour
     }
     void FixedUpdate()
     {
-        if (Input.GetKey(KeyCode.Mouse0) && !m_IsLocked)
+        if (m_IsLocked == false)
         {
-            if (!mIsHolding)
+            if (Input.GetKey(KeyCode.Mouse0) && !m_IsLocked)
             {
-                tryPickObject();
-                m_PickingUp = true;
+                if (!mIsHolding)
+                {
+                    tryPickObject();
+                    m_PickingUp = true;
+                }
+                else
+                {
+                    holdObject();
+                }
             }
-            else
+            else if (mIsHolding)
             {
-                holdObject();
+                DropObject();
             }
-        }
-        else if (mIsHolding)
-        {
-            DropObject();
         }
     }
 
@@ -148,7 +157,7 @@ public class DoorModule : MonoBehaviour
         if (Physics.Raycast(m_PlayerView.transform.position, m_PlayerView.transform.forward, out hit, m_PickUpDistance))
         {
             m_TargetObject = hit.collider.gameObject;
-            if (hit.collider.tag == "Door" && m_PickingUp)
+            if (hit.collider.tag == "Door" && m_PickingUp && hit.collider.GetComponent<DoorModule>().m_IsLocked == false)
             {
                 mIsHolding = true;
                 m_TargetObject.GetComponent<Rigidbody>().useGravity = true;
@@ -158,6 +167,10 @@ public class DoorModule : MonoBehaviour
                 m_ThrowStrength = m_DoorThrow;
                 m_Distance = m_DoorDistance;
                 m_MaxDistanceGrab = m_DoorMaxGrab;
+            }
+            else
+            {
+                return;
             }
         }
     }
