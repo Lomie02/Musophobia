@@ -32,6 +32,7 @@ public class NoteIdentifier : MonoBehaviour
         m_PauseManager = FindObjectOfType<PauseManager>();
         m_Player = FindObjectOfType<PlayerCamera>();
         m_HasPages = CheckForPages();
+        m_TextPages.text = m_PageDescriptions[0];
     }
 
     bool CheckForPages()
