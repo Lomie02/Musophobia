@@ -119,6 +119,7 @@ public class NoteIdentifier : MonoBehaviour
 
         m_Canvas.gameObject.SetActive(true);
         m_PauseManager.FreezeWorld();
+        m_TextPages.text = m_PageDescriptions[m_CurrentPage];
 
         m_Player.CursorState(true);
         m_Player.SetPlayerState(false);

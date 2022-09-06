@@ -280,9 +280,9 @@ MonoBehaviour:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
     m_FontSize: 24
     m_FontStyle: 0
-    m_BestFit: 0
+    m_BestFit: 1
     m_MinSize: 2
-    m_MaxSize: 63
+    m_MaxSize: 24
     m_Alignment: 0
     m_AlignByGeometry: 0
     m_RichText: 1
@@ -3289,7 +3289,6 @@ MonoBehaviour:
   m_TextPages: {fileID: 84363803}
   m_PageDescriptions:
   - This is the test note
-  - 2 Note 2 Test
   m_OnRead:
     m_PersistentCalls:
       m_Calls: []
