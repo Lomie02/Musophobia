@@ -8,7 +8,7 @@ public class SlidingDoor : MonoBehaviour
 {
     Transform m_Location;
 
-    [SerializeField] string m_Tag;
+    [SerializeField] string m_Tag = "SlidingDoor";
 
     [Space]
 
@@ -31,10 +31,10 @@ public class SlidingDoor : MonoBehaviour
     private float m_MaxDistanceGrab = 4f;
 
     private GameObject m_TargetObject;
-    float m_DoorPickupRange = 2f;
+    float m_DoorPickupRange = 5f;
     float m_DoorThrow = 10f;
-    float m_DoorDistance = 2f;
-    float m_DoorMaxGrab = 3f;
+    float m_DoorDistance = 5f;
+    float m_DoorMaxGrab = 5f;
 
     void Start()
     {

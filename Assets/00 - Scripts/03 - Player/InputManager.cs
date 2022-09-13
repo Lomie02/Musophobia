@@ -5,9 +5,6 @@ using UnityEngine.Events;
 
 public class InputManager : MonoBehaviour
 {
-    [Header("General")]
-    [SerializeField, Tooltip("Object to act as a ligher")] GameObject m_LighterObject;
-
     [Header("Lighter Events")]
     [SerializeField] UnityEvent m_LighterOn;
     [SerializeField] UnityEvent m_LighterOff;
@@ -19,7 +16,7 @@ public class InputManager : MonoBehaviour
     PlayerCamera m_PlayerView;
     GameManger m_GameManger;
 
-    bool m_CandleOn = true;
+    bool m_CandleOn = false;
     bool m_IsInspecting = false;
 
     [SerializeField] GameObject m_MessageDrawer = null;
@@ -35,9 +32,18 @@ public class InputManager : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Mouse1))
+        if (Input.GetKeyDown(KeyCode.F))
         {
             CycleCandle();
+
+        }
+
+        if (Input.GetKeyDown(KeyCode.Mouse1))
+        {
+            if (m_ItemManager.GetCurrentSlot())
+            {
+                m_ItemManager.CyclePower();
+            }
         }
 
         if (Input.GetKeyDown(KeyCode.R) && m_ItemManager.GetCurrentSlot())
@@ -53,10 +59,13 @@ public class InputManager : MonoBehaviour
             SearchKeyDoor();
             SearchForNote();
 
+            m_ItemManager.Use();
+
             if (!m_ItemManager.GetCurrentSlot())
             {
                 Searchitem();
             }
+
         }
 
         if (Input.GetKeyDown(KeyCode.Q))
@@ -116,7 +125,7 @@ public class InputManager : MonoBehaviour
 
         if (Physics.Raycast(m_PlayerView.transform.position, m_PlayerView.transform.forward, out cast, 3))
         {
-            if (cast.collider.gameObject.GetComponent<DoorModule>())
+            if (cast.collider.gameObject.GetComponent<DoorModule>() != null)
             {
                 DoorModule temp;
                 temp = cast.collider.gameObject.GetComponent<DoorModule>();
@@ -125,6 +134,22 @@ public class InputManager : MonoBehaviour
                 {
                     ClearKey();
                 }
+            }
+        }
+    }
+
+    void SearchForCandle()
+    {
+        RaycastHit cast;
+
+        if (Physics.Raycast(m_PlayerView.transform.position, m_PlayerView.transform.forward, out cast, 3))
+        {
+            if (cast.collider.gameObject.GetComponent<CandleIdentifier>())
+            {
+                CandleIdentifier temp;
+                temp = cast.collider.gameObject.GetComponent<CandleIdentifier>();
+
+                temp.LightCandle();
             }
         }
     }
@@ -195,12 +220,6 @@ public class InputManager : MonoBehaviour
             m_LighterOn.Invoke();
             m_CandleOn = true;
         }
-    }
-
-    void SetCandle(bool _state)
-    {
-        m_CandleOn = _state;
-        m_LighterObject.gameObject.SetActive(_state);
     }
 
     public bool GetCandleState()

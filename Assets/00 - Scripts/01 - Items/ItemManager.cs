@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.Events;
 public class ItemManager : MonoBehaviour
 {
     [Header("General")]
@@ -81,6 +81,9 @@ public class ItemManager : MonoBehaviour
 
         m_PhysicalObject[m_CurrentSlot].GetComponent<Collider>().enabled = false;
 
+        m_ItemIdentifier = _Object.GetComponent<ItemIdentifier>();
+        m_ItemIdentifier.PickUpSound();
+
         if (m_PhysicalObject[m_CurrentSlot].gameObject.GetComponent<KeyIdentifier>() != null)
         {
             m_Key = m_PhysicalObject[m_CurrentSlot].gameObject.GetComponent<KeyIdentifier>();
@@ -110,7 +113,16 @@ public class ItemManager : MonoBehaviour
 
         if (m_PhysicalObject[m_CurrentSlot] != null)
         {
+            if (m_PhysicalObject[m_CurrentSlot].GetComponent<ItemIdentifier>() != null)
+            {
+                m_ItemIdentifier = m_PhysicalObject[m_CurrentSlot].GetComponent<ItemIdentifier>();
+            }
+
             m_PhysicalObject[m_CurrentSlot].gameObject.SetActive(true);
+        }
+        else
+        {
+            m_ItemIdentifier = null;
         }
     }
 
@@ -141,6 +153,9 @@ public class ItemManager : MonoBehaviour
             m_PhysicalObject[m_CurrentSlot].gameObject.GetComponent<Renderer>().enabled = true;
             m_Key = null;
         }
+
+        m_ItemIdentifier.DroppedSound();
+        m_ItemIdentifier = null;
 
         m_Rig[m_CurrentSlot].isKinematic = false;
         m_PhysicalObject[m_CurrentSlot].GetComponent<Collider>().enabled = true;
@@ -177,5 +192,21 @@ public class ItemManager : MonoBehaviour
     public void SetItemBox(Transform _ItemBox)
     {
         m_ItemBox = _ItemBox;
+    }
+
+    public void CyclePower()
+    {
+        if (m_ItemIdentifier)
+        {
+            m_ItemIdentifier.CycleState();
+        }
+    }
+
+    public void Use()
+    {
+        if (m_ItemIdentifier)
+        {
+            m_ItemIdentifier.UseItem();
+        }
     }
 }

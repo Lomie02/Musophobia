@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
+using UnityEngine.Events;
+
 [RequireComponent(typeof(NavMeshAgent))]
 public class AIModule : MonoBehaviour
 {
@@ -40,6 +42,14 @@ public class AIModule : MonoBehaviour
     //=========================================== AI chase
     [SerializeField, Tooltip("How long the AI will look for the player before returning to roaming.")] float m_InterestTime = 5f;
 
+    [Header("Audio")]
+    [SerializeField] UnityEvent m_EnterChase;
+    [SerializeField] UnityEvent m_ExitChase;
+
+    [Space]
+
+    [SerializeField] UnityEvent m_EnterRoam;
+    [SerializeField] UnityEvent m_ExitRoam;
     //===========================================
 
     NavMeshAgent m_NavMeshAgent;
@@ -153,16 +163,17 @@ public class AIModule : MonoBehaviour
 
         Vector3 Direction = m_Player.transform.position - transform.position;
 
-        if (Distance < m_SearchDistance && m_Input.GetCandleState())
+        if (Distance < m_SearchDistance && m_Input.GetCandleState() && m_AiStates != EnemyStates.CHASE)
         {
-
             m_IsChasing = true;
             SetAiSpeed(m_ChaseSpeed);
+
+            m_ExitRoam.Invoke();
+            m_EnterChase.Invoke();
             m_AiStates = EnemyStates.CHASE;
         }
 
         //=======================================================
-
 
         if (m_AiStates == EnemyStates.CHASE)
         {
@@ -185,6 +196,9 @@ public class AIModule : MonoBehaviour
 
                 SetAiSpeed(m_RoamSpeed);
                 m_IsChasing=false;
+
+                m_ExitChase.Invoke();
+                m_EnterRoam.Invoke();
                 m_AiStates = EnemyStates.ROAM;
             }
         }

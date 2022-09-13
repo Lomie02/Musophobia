@@ -32,13 +32,17 @@ public class NoteIdentifier : MonoBehaviour
         m_PauseManager = FindObjectOfType<PauseManager>();
         m_Player = FindObjectOfType<PlayerCamera>();
         m_HasPages = CheckForPages();
+        m_TextPages.text = m_PageDescriptions[0];
     }
 
     bool CheckForPages()
     {
         if (m_PageDescriptions.Length > 1)
         {
-            m_LeftButton.SetActive(false);
+            if (m_LeftButton)
+            {
+                m_LeftButton.SetActive(false);
+            }
             m_RightButton.SetActive(true);
             
             CheckPlacement();
@@ -46,7 +50,10 @@ public class NoteIdentifier : MonoBehaviour
         }
         else
         {
-            m_LeftButton.SetActive(false);
+            if (m_LeftButton)
+            {
+                m_LeftButton.SetActive(false);
+            }
             m_RightButton.SetActive(false);
             CheckPlacement();
             return false;
