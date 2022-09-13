@@ -990,7 +990,7 @@ GameObject:
   - component: {fileID: 1740589718}
   - component: {fileID: 1740589717}
   m_Layer: 5
-  m_Name: Phanopolli Build
+  m_Name: Musophobia Build
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1064,7 +1064,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Phanopolli First Build Demo
+  m_Text: Musophobia Alpha Build
 --- !u!222 &1740589719
 CanvasRenderer:
   m_ObjectHideFlags: 0

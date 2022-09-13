@@ -210,7 +210,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Phanopolli First Build Demo
+  m_Text: Musophobia Alpha Demo
 --- !u!222 &111472893
 CanvasRenderer:
   m_ObjectHideFlags: 0
