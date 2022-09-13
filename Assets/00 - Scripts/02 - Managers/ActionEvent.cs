@@ -13,6 +13,9 @@ public class ActionEvent : MonoBehaviour
 {
     [Header("Detection")]
     [SerializeField, Tooltip("An object that can trigger the event")] string m_Tag = "Player";
+    [Space]
+    [SerializeField] bool m_UseBothTags = false;
+    [SerializeField, Tooltip("An object that can trigger the event")] string m_Tag2 = "Other";
 
     [Space]
 
@@ -89,7 +92,7 @@ public class ActionEvent : MonoBehaviour
 
     public void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.tag == m_Tag)
+        if (other.gameObject.tag == m_Tag || other.gameObject.tag == m_Tag2 && m_UseBothTags)
         {
             if (m_OnEnter != null)
             {

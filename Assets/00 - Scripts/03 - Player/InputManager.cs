@@ -132,7 +132,8 @@ public class InputManager : MonoBehaviour
 
                 if (temp.RequestDoorOpen(m_ItemManager.GetKey()))
                 {
-                    ClearKey();
+                    m_ItemManager.DeleteItem();
+                    m_ItemManager.ClearVectors();
                 }
             }
         }
@@ -231,9 +232,6 @@ public class InputManager : MonoBehaviour
     {
         if (m_HoldingItem)
         {
-            m_ItemManager.DeleteItem();
-
-            m_ItemManager.ClearVectors();
         }
         else
         {
