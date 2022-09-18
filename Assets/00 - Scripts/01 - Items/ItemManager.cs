@@ -87,7 +87,6 @@ public class ItemManager : MonoBehaviour
         if (m_PhysicalObject[m_CurrentSlot].gameObject.GetComponent<KeyIdentifier>() != null)
         {
             m_Key = m_PhysicalObject[m_CurrentSlot].gameObject.GetComponent<KeyIdentifier>();
-            m_PhysicalObject[m_CurrentSlot].gameObject.GetComponent<Renderer>().enabled = false;
         }
 
         if (m_PhysicalObject[m_CurrentSlot].gameObject.GetComponent<Rigidbody>() != null)
@@ -150,7 +149,6 @@ public class ItemManager : MonoBehaviour
 
         if (m_Key)
         {
-            m_PhysicalObject[m_CurrentSlot].gameObject.GetComponent<Renderer>().enabled = true;
             m_Key = null;
         }
 

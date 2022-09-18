@@ -7,18 +7,12 @@ public class DoorModule : MonoBehaviour
 {
     [Header("General")]
 
-    [SerializeField] Collider m_Barrier;
     [SerializeField] int m_DoorId;
     [SerializeField] bool m_LockedStart = true;
-
-    [Header("Destruction")]
-    [SerializeField, Tooltip("When enabled, the door can be ripped off its hinges with enough force.")] bool m_Destructable = false;
-    [SerializeField, Tooltip("The amount of force needed to break a door.")] float m_DestructionForce = 20f;
 
     [Header("Events")]
     [SerializeField, Space] UnityEvent m_OnDoorUnlocked;
     [SerializeField, Space] UnityEvent m_OnIncorrectKey;
-    [SerializeField, Space] UnityEvent m_OnDoorBreak;
 
     bool m_IsLocked = true;
     HingeJoint m_DoorJoint;
@@ -50,7 +44,6 @@ public class DoorModule : MonoBehaviour
         if (m_IsLocked && _Id.GetKeyID() == m_DoorId)
         {
             m_IsLocked = false;
-            m_Barrier.gameObject.GetComponent<BoxCollider>().enabled = false;
 
             if (m_OnDoorUnlocked != null)
             {
@@ -61,6 +54,7 @@ public class DoorModule : MonoBehaviour
         }
         else
         {
+                
             if (m_OnIncorrectKey != null)
             {
                 m_OnIncorrectKey.Invoke();
@@ -77,18 +71,10 @@ public class DoorModule : MonoBehaviour
     public void SetLockState(bool _state)
     {
         m_IsLocked = _state;
-        m_Barrier.gameObject.SetActive(m_IsLocked);
     }
     void Start()
     {
         m_DoorJoint = GetComponent<HingeJoint>();
-        Physics.IgnoreCollision(gameObject.GetComponent<Collider>(), m_Barrier);
-
-        if (m_Barrier)
-        {
-            Physics.IgnoreCollision(gameObject.GetComponent<Collider>(), m_Barrier.GetComponent<Collider>());
-        }
-
 
         if (m_LockedStart)
         {
@@ -97,15 +83,6 @@ public class DoorModule : MonoBehaviour
         else
         {
             SetLockState(m_LockedStart);
-        }
-
-        if (m_Destructable)
-        {
-            m_DoorJoint.breakForce = m_DestructionForce;
-        }
-        else
-        {
-            m_DoorJoint.breakForce = float.PositiveInfinity;
         }
 
         if (!m_DoorJoint)
@@ -120,13 +97,6 @@ public class DoorModule : MonoBehaviour
         m_PlayerView = GameObject.FindGameObjectWithTag("MainCamera");
     }
 
-    private void OnJointBreak(float breakForce)
-    {
-        if (m_OnDoorBreak != null)
-        {
-            m_OnDoorBreak.Invoke();
-        }
-    }
     void FixedUpdate()
     {
         if (m_IsLocked == false)
