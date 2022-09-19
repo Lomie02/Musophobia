@@ -40,6 +40,18 @@ public class ItemManager : MonoBehaviour
         m_ItemBox.localPosition = m_DefaultPosition;
     }
 
+    public bool IsKeySlot()
+    {
+        if (m_PhysicalObject[m_CurrentSlot].GetComponent<KeyIdentifier>())
+        {
+            return true;
+        }
+        else 
+        { 
+            return false; 
+        }  
+    }
+
     void Update()
     {
         if (m_PhysicalObject[m_CurrentSlot] && m_UsingRotate)
@@ -83,6 +95,16 @@ public class ItemManager : MonoBehaviour
 
         m_ItemIdentifier = _Object.GetComponent<ItemIdentifier>();
         m_ItemIdentifier.PickUpSound();
+
+       /* //=====================================
+        m_PhysicalObject[m_CurrentSlot].layer = 3;
+        for (int i = 0; i < m_PhysicalObject[m_CurrentSlot].transform.childCount; i++)
+        {
+            m_PhysicalObject[m_CurrentSlot].transform.GetChild(i).gameObject.layer = 3;
+        }
+
+        //=====================================
+       */
 
         if (m_PhysicalObject[m_CurrentSlot].gameObject.GetComponent<KeyIdentifier>() != null)
         {
@@ -152,6 +174,17 @@ public class ItemManager : MonoBehaviour
             m_Key = null;
         }
 
+
+       /* //=====================================
+        m_PhysicalObject[m_CurrentSlot].layer = 0;
+        for (int i = 0; i < m_PhysicalObject[m_CurrentSlot].transform.childCount; i++)
+        {
+            m_PhysicalObject[m_CurrentSlot].transform.GetChild(i).gameObject.layer = 0;
+        }
+
+        //=====================================
+       */
+
         m_ItemIdentifier.DroppedSound();
         m_ItemIdentifier = null;
 
@@ -168,6 +201,7 @@ public class ItemManager : MonoBehaviour
         Destroy(m_PhysicalObject[m_CurrentSlot]);
         m_Key = null;
         m_Rig = null;
+       // m_PhysicalObject = null;   
     }
 
     public void ClearVectors()

@@ -44,7 +44,7 @@ public class SlidingDoor : MonoBehaviour
         GetComponent<Rigidbody>().freezeRotation = true;
     }
 
-    void Update()
+   /* void Update()
     {
         m_NewPos.x = m_Location.position.x;
         m_NewPos.y = m_Location.position.y;
@@ -54,6 +54,7 @@ public class SlidingDoor : MonoBehaviour
 
         m_Location.position = m_NewPos;
     }
+   */
 
     void FixedUpdate()
     {
@@ -61,7 +62,7 @@ public class SlidingDoor : MonoBehaviour
         m_NewPos.y = m_Location.position.y;
         m_NewPos.z = m_Location.position.z;
 
-        m_NewPos.x = Mathf.Clamp(m_NewPos.x, m_Min, m_Max);
+        m_NewPos.z = Mathf.Clamp(m_NewPos.z, m_Min, m_Max);
 
         m_Location.position = m_NewPos;
 
