@@ -130,11 +130,14 @@ public class InputManager : MonoBehaviour
                 DoorModule temp;
                 temp = cast.collider.gameObject.GetComponent<DoorModule>();
 
-                if (temp.RequestDoorOpen(m_ItemManager.GetKey()))
-                {
-                    m_ItemManager.DeleteItem();
-                    m_ItemManager.ClearVectors();
-                }
+              //  if (m_ItemManager.IsKeySlot())
+              //  {
+                    if (temp.RequestDoorOpen(m_ItemManager.GetKey()))
+                    {
+                        m_ItemManager.DeleteItem();
+                        m_ItemManager.ClearVectors();
+                    }
+               // }
             }
         }
     }
