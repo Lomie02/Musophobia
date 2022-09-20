@@ -200,7 +200,7 @@ public class ItemManager : MonoBehaviour
         Destroy(m_PhysicalObject[m_CurrentSlot]);
         m_Key = null;
         m_Rig = null;
-        m_PhysicalObject = null;   
+        m_PhysicalObject[m_CurrentSlot] = null;   
     }
 
     public void ClearVectors()
