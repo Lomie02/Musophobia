@@ -42,7 +42,7 @@ public class ItemManager : MonoBehaviour
 
     public bool IsKeySlot()
     {
-        if (m_PhysicalObject[m_CurrentSlot].GetComponent<KeyIdentifier>())
+        if (m_PhysicalObject[m_CurrentSlot].GetComponent<KeyIdentifier>() && m_PhysicalObject[m_CurrentSlot] != null)
         {
             return true;
         }
@@ -96,7 +96,7 @@ public class ItemManager : MonoBehaviour
         m_ItemIdentifier = _Object.GetComponent<ItemIdentifier>();
         m_ItemIdentifier.PickUpSound();
 
-       /* //=====================================
+        //=====================================
         m_PhysicalObject[m_CurrentSlot].layer = 3;
         for (int i = 0; i < m_PhysicalObject[m_CurrentSlot].transform.childCount; i++)
         {
@@ -104,7 +104,7 @@ public class ItemManager : MonoBehaviour
         }
 
         //=====================================
-       */
+
 
         if (m_PhysicalObject[m_CurrentSlot].gameObject.GetComponent<KeyIdentifier>() != null)
         {
@@ -169,13 +169,7 @@ public class ItemManager : MonoBehaviour
         YVal = 0;
         XVal = 0;
 
-        if (m_Key)
-        {
-            m_Key = null;
-        }
-
-
-       /* //=====================================
+        //=====================================
         m_PhysicalObject[m_CurrentSlot].layer = 0;
         for (int i = 0; i < m_PhysicalObject[m_CurrentSlot].transform.childCount; i++)
         {
@@ -183,7 +177,11 @@ public class ItemManager : MonoBehaviour
         }
 
         //=====================================
-       */
+
+        if (m_Key)
+        {
+            m_Key = null;
+        }
 
         m_ItemIdentifier.DroppedSound();
         m_ItemIdentifier = null;
@@ -192,6 +190,7 @@ public class ItemManager : MonoBehaviour
         m_PhysicalObject[m_CurrentSlot].GetComponent<Collider>().enabled = true;
 
         m_PhysicalObject[m_CurrentSlot].transform.parent = null;
+
         m_Rig[m_CurrentSlot] = null;
         m_PhysicalObject[m_CurrentSlot] = null;
     }
@@ -201,7 +200,7 @@ public class ItemManager : MonoBehaviour
         Destroy(m_PhysicalObject[m_CurrentSlot]);
         m_Key = null;
         m_Rig = null;
-       // m_PhysicalObject = null;   
+        m_PhysicalObject = null;   
     }
 
     public void ClearVectors()
