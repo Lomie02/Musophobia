@@ -19,8 +19,8 @@ public struct SoundList
     [Header("General")]
     public string m_Name;
     public AudioSource m_Source;
-    public bool m_UseMixer;
 
+    public bool m_UseMixer;
     [Header("Mixer"), Space]
 
     public bool m_Mute;
@@ -121,13 +121,16 @@ public class AudioManager : MonoBehaviour
         {
             if (m_Sounds[i].m_Name == _name)
             {
-                if (m_Sounds[i].m_Mode == ClipMode.RANDOM)
+                if (!m_Sounds[i].m_Source.isPlaying)
                 {
-                    m_Sounds[i].m_Source.clip = m_Sounds[i].m_Clips[Random.Range(0, m_Sounds[i].m_Clips.Length)];
-                }
-                else
-                {
-                    m_Sounds[i].m_Source.Play();
+                    if (m_Sounds[i].m_Mode == ClipMode.RANDOM)
+                    {
+                        m_Sounds[i].m_Source.clip = m_Sounds[i].m_Clips[Random.Range(0, m_Sounds[i].m_Clips.Length)];
+                    }
+                    else
+                    {
+                        m_Sounds[i].m_Source.Play();
+                    }
                 }
             }
         }

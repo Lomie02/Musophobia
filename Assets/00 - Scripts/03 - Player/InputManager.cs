@@ -126,8 +126,6 @@ public class InputManager : MonoBehaviour
 
         if (Physics.Raycast(m_PlayerView.transform.position, m_PlayerView.transform.forward, out cast, 1.5f))
         {
-                Debug.Log("Hit:" + cast.collider.gameObject.name);
-
             if (cast.collider.gameObject.GetComponent<DoorModule>() != null)
             {
                 DoorModule temp;
