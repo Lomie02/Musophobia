@@ -56,6 +56,7 @@ public class InputManager : MonoBehaviour
             SearchForDoor();
             SearchDrawer();
 
+
             SearchKeyDoor();
             SearchForNote();
 
@@ -123,21 +124,23 @@ public class InputManager : MonoBehaviour
     {
         RaycastHit cast;
 
-        if (Physics.Raycast(m_PlayerView.transform.position, m_PlayerView.transform.forward, out cast, 3))
+        if (Physics.Raycast(m_PlayerView.transform.position, m_PlayerView.transform.forward, out cast, 1.5f))
         {
+                Debug.Log("Hit:" + cast.collider.gameObject.name);
+
             if (cast.collider.gameObject.GetComponent<DoorModule>() != null)
             {
                 DoorModule temp;
                 temp = cast.collider.gameObject.GetComponent<DoorModule>();
 
-              //  if (m_ItemManager.IsKeySlot())
-              //  {
+                if (m_ItemManager.IsKeySlot())
+                {
                     if (temp.RequestDoorOpen(m_ItemManager.GetKey()))
                     {
                         m_ItemManager.DeleteItem();
                         m_ItemManager.ClearVectors();
                     }
-               // }
+                }
             }
         }
     }
