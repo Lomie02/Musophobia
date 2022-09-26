@@ -28,6 +28,11 @@ public class GameManger : MonoBehaviour
     [SerializeField, Tooltip("Win Screen")] string m_WinScreen = "WinScreen";
     [SerializeField, Tooltip("Game Over scene")] string m_GameOverScreen = "GameOver";
 
+    [Space]
+    [Header("Key Binds")]
+    [SerializeField] KeyCode m_ExitGame = KeyCode.Escape;
+    [SerializeField] KeyCode m_Pause = KeyCode.P;
+
     //======================================================
 
     PauseManager m_PauseManager = null;
@@ -74,7 +79,7 @@ public class GameManger : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape) && m_UseQuit)
+        if (Input.GetKeyDown(m_ExitGame) && m_UseQuit)
         {
             if (m_OnQuit != null) 
             {
@@ -84,7 +89,7 @@ public class GameManger : MonoBehaviour
         }
         if (m_PauseManager)
         {
-            if (Input.GetKeyDown(KeyCode.P))
+            if (Input.GetKeyDown(m_Pause))
             {
                 m_PauseManager.CyclePause();
             }
