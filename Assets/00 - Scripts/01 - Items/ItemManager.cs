@@ -5,10 +5,13 @@ using UnityEngine.Events;
 public class ItemManager : MonoBehaviour
 {
     [Header("General")]
-    public bool m_UsingRotate = false;
+    [SerializeField] int m_ItemSlots = 3;
+    [Space]
+    bool m_UsingRotate = false;
+
     public GameObject[] m_PhysicalObject;
-    public int m_CurrentSlot = 0;
-    public Rigidbody[] m_Rig = null;
+    int m_CurrentSlot = 0;
+    Rigidbody[] m_Rig = null;
 
     [Header("Rotation")]
     public float m_RotateSpeed = 12;
@@ -34,7 +37,7 @@ public class ItemManager : MonoBehaviour
 
     void Start()
     {
-        m_PhysicalObject = new GameObject[3];
+        m_PhysicalObject = new GameObject[m_ItemSlots];
         m_Rig = new Rigidbody[m_PhysicalObject.Length];
 
         m_ItemBox.localPosition = m_DefaultPosition;
@@ -116,6 +119,11 @@ public class ItemManager : MonoBehaviour
             m_Rig[m_CurrentSlot] = m_PhysicalObject[m_CurrentSlot].gameObject.GetComponent<Rigidbody>();
             m_Rig[m_CurrentSlot].isKinematic = true;
         }
+    }
+
+    public string GetCurrentItemName()
+    {
+        return m_ItemIdentifier.GetName();
     }
 
     public void CycleSlots()
