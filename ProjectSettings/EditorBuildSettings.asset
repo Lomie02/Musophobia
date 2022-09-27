@@ -9,6 +9,9 @@ EditorBuildSettings:
     path: Assets/01 - Scenes/01 - Personal Folders/Liam/Menu and Death/Jose_Main_Menu.unity
     guid: 7da389d872669d54ea4ad212ba7bd4fb
   - enabled: 1
+    path: Assets/01 - Scenes/01 - Personal Folders/Liam/Cutscene/New Scene.unity
+    guid: 46a0a68a564addd47a2fa387641ace43
+  - enabled: 1
     path: Assets/01 - Scenes/01 - Personal Folders/Liam/GameScene/Level_House_Fixing.unity
     guid: 561780901e095a049b0d140ba8bc4db6
   - enabled: 1
