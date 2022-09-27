@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+
 public class ItemManager : MonoBehaviour
 {
     [Header("General")]
@@ -34,6 +35,8 @@ public class ItemManager : MonoBehaviour
 
     KeyIdentifier m_Key = null;
     bool m_HoldingItem;
+
+    //============================ Objective Vars
 
     void Start()
     {
