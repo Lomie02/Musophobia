@@ -5,10 +5,13 @@ using UnityEngine.Events;
 public class ItemManager : MonoBehaviour
 {
     [Header("General")]
-    public bool m_UsingRotate = false;
+    [SerializeField] int m_ItemSlots = 3;
+    [Space]
+    bool m_UsingRotate = false;
+
     public GameObject[] m_PhysicalObject;
-    public int m_CurrentSlot = 0;
-    public Rigidbody[] m_Rig = null;
+    int m_CurrentSlot = 0;
+    Rigidbody[] m_Rig = null;
 
     [Header("Rotation")]
     public float m_RotateSpeed = 12;
@@ -34,10 +37,22 @@ public class ItemManager : MonoBehaviour
 
     void Start()
     {
-        m_PhysicalObject = new GameObject[3];
+        m_PhysicalObject = new GameObject[m_ItemSlots];
         m_Rig = new Rigidbody[m_PhysicalObject.Length];
 
         m_ItemBox.localPosition = m_DefaultPosition;
+    }
+
+    public bool IsKeySlot()
+    {
+        if (m_PhysicalObject[m_CurrentSlot].GetComponent<KeyIdentifier>() && m_PhysicalObject[m_CurrentSlot] != null)
+        {
+            return true;
+        }
+        else 
+        { 
+            return false; 
+        }  
     }
 
     void Update()
@@ -84,6 +99,16 @@ public class ItemManager : MonoBehaviour
         m_ItemIdentifier = _Object.GetComponent<ItemIdentifier>();
         m_ItemIdentifier.PickUpSound();
 
+        //=====================================
+        m_PhysicalObject[m_CurrentSlot].layer = 3;
+        for (int i = 0; i < m_PhysicalObject[m_CurrentSlot].transform.childCount; i++)
+        {
+            m_PhysicalObject[m_CurrentSlot].transform.GetChild(i).gameObject.layer = 3;
+        }
+
+        //=====================================
+
+
         if (m_PhysicalObject[m_CurrentSlot].gameObject.GetComponent<KeyIdentifier>() != null)
         {
             m_Key = m_PhysicalObject[m_CurrentSlot].gameObject.GetComponent<KeyIdentifier>();
@@ -94,6 +119,11 @@ public class ItemManager : MonoBehaviour
             m_Rig[m_CurrentSlot] = m_PhysicalObject[m_CurrentSlot].gameObject.GetComponent<Rigidbody>();
             m_Rig[m_CurrentSlot].isKinematic = true;
         }
+    }
+
+    public string GetCurrentItemName()
+    {
+        return m_ItemIdentifier.GetName();
     }
 
     public void CycleSlots()
@@ -147,6 +177,15 @@ public class ItemManager : MonoBehaviour
         YVal = 0;
         XVal = 0;
 
+        //=====================================
+        m_PhysicalObject[m_CurrentSlot].layer = 0;
+        for (int i = 0; i < m_PhysicalObject[m_CurrentSlot].transform.childCount; i++)
+        {
+            m_PhysicalObject[m_CurrentSlot].transform.GetChild(i).gameObject.layer = 0;
+        }
+
+        //=====================================
+
         if (m_Key)
         {
             m_Key = null;
@@ -159,6 +198,7 @@ public class ItemManager : MonoBehaviour
         m_PhysicalObject[m_CurrentSlot].GetComponent<Collider>().enabled = true;
 
         m_PhysicalObject[m_CurrentSlot].transform.parent = null;
+
         m_Rig[m_CurrentSlot] = null;
         m_PhysicalObject[m_CurrentSlot] = null;
     }
@@ -168,6 +208,7 @@ public class ItemManager : MonoBehaviour
         Destroy(m_PhysicalObject[m_CurrentSlot]);
         m_Key = null;
         m_Rig = null;
+        m_PhysicalObject[m_CurrentSlot] = null;   
     }
 
     public void ClearVectors()

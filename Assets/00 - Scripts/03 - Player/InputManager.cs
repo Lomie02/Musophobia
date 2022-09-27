@@ -9,8 +9,8 @@ public class InputManager : MonoBehaviour
     [SerializeField] UnityEvent m_LighterOn;
     [SerializeField] UnityEvent m_LighterOff;
 
-    ItemManager m_ItemManager;
     [SerializeField] Transform m_ItemBox;
+    [SerializeField] GameObject m_MessageDrawer = null;
 
     bool m_HoldingItem;
     PlayerCamera m_PlayerView;
@@ -18,11 +18,26 @@ public class InputManager : MonoBehaviour
 
     bool m_CandleOn = false;
     bool m_IsInspecting = false;
+    ItemManager m_ItemManager;
 
-    [SerializeField] GameObject m_MessageDrawer = null;
+    [Header("Key Binds")]
+    [SerializeField] KeyCode m_FlashLight = KeyCode.F;
+    [SerializeField] KeyCode m_PowerItems = KeyCode.Mouse1;
+    [SerializeField] KeyCode m_InspectItems = KeyCode.R;
+    [SerializeField] KeyCode m_Interact = KeyCode.E;
+    [SerializeField] KeyCode m_CycleInventory = KeyCode.Q;
+    [SerializeField] KeyCode m_DropItems = KeyCode.G;
+
+    [Header("Controls & Tips")]
+    [SerializeField] KeyCode m_Bind = KeyCode.T;
+    [SerializeField] GameObject m_Dropdown;
 
     private void Start()
     {
+        if (m_Dropdown)
+        {
+            m_Dropdown.SetActive(false);
+        }
         m_ItemManager = FindObjectOfType<ItemManager>();
         m_GameManger = FindObjectOfType<GameManger>();
 
@@ -32,13 +47,12 @@ public class InputManager : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.F))
+        if (Input.GetKeyDown(m_FlashLight))
         {
             CycleCandle();
-
         }
 
-        if (Input.GetKeyDown(KeyCode.Mouse1))
+        if (Input.GetKeyDown(m_PowerItems))
         {
             if (m_ItemManager.GetCurrentSlot())
             {
@@ -46,15 +60,21 @@ public class InputManager : MonoBehaviour
             }
         }
 
-        if (Input.GetKeyDown(KeyCode.R) && m_ItemManager.GetCurrentSlot())
+        if (Input.GetKeyDown(m_Bind))
+        {
+            CycleControls();
+        }
+
+        if (Input.GetKeyDown(m_InspectItems) && m_ItemManager.GetCurrentSlot())
         {
             CycleInspect();
         }
 
-        if (Input.GetKeyDown(KeyCode.E))
+        if (Input.GetKeyDown(m_Interact))
         {
             SearchForDoor();
             SearchDrawer();
+
 
             SearchKeyDoor();
             SearchForNote();
@@ -68,12 +88,12 @@ public class InputManager : MonoBehaviour
 
         }
 
-        if (Input.GetKeyDown(KeyCode.Q))
+        if (Input.GetKeyDown(m_CycleInventory))
         {
             m_ItemManager.CycleSlots();
         }
 
-        if (Input.GetKeyDown(KeyCode.G) && m_ItemManager.GetCurrentSlot())
+        if (Input.GetKeyDown(m_DropItems) && m_ItemManager.GetCurrentSlot())
         {
             if (m_IsInspecting)
             {
@@ -107,6 +127,18 @@ public class InputManager : MonoBehaviour
             }
         }
     }
+
+    void CycleControls()
+    {
+        if (m_Dropdown.activeSelf)
+        {
+            m_Dropdown.SetActive(false);
+        }
+        else
+        {
+            m_Dropdown.SetActive(true);
+        }
+    }
     void SearchForDoor()
     {
         RaycastHit cast;
@@ -123,17 +155,20 @@ public class InputManager : MonoBehaviour
     {
         RaycastHit cast;
 
-        if (Physics.Raycast(m_PlayerView.transform.position, m_PlayerView.transform.forward, out cast, 3))
+        if (Physics.Raycast(m_PlayerView.transform.position, m_PlayerView.transform.forward, out cast, 1.5f))
         {
             if (cast.collider.gameObject.GetComponent<DoorModule>() != null)
             {
                 DoorModule temp;
                 temp = cast.collider.gameObject.GetComponent<DoorModule>();
 
-                if (temp.RequestDoorOpen(m_ItemManager.GetKey()))
+                if (m_ItemManager.IsKeySlot())
                 {
-                    m_ItemManager.DeleteItem();
-                    m_ItemManager.ClearVectors();
+                    if (temp.RequestDoorOpen(m_ItemManager.GetKey()))
+                    {
+                        m_ItemManager.DeleteItem();
+                        m_ItemManager.ClearVectors();
+                    }
                 }
             }
         }
