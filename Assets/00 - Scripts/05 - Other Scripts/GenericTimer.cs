@@ -14,6 +14,8 @@ public class GenericTimer : MonoBehaviour
 
     bool isTiming = false;
 
+    bool m_PlayTimerStart = false;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -25,6 +27,7 @@ public class GenericTimer : MonoBehaviour
         if (!isTiming)
         {
             isTiming = true;
+            m_PlayTimerStart = true;
         }
     }
 
