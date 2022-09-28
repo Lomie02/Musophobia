@@ -11,6 +11,7 @@ TagManager:
   - Interact
   - SlideDoor
   - Candle
+  - Camera
   layers:
   - Default
   - TransparentFX
