@@ -35,6 +35,7 @@ public class ItemManager : MonoBehaviour
 
     KeyIdentifier m_Key = null;
     bool m_HoldingItem;
+    bool m_FixRotation = true;
 
     //============================ Objective Vars
 
@@ -52,10 +53,15 @@ public class ItemManager : MonoBehaviour
         {
             return true;
         }
-        else 
-        { 
-            return false; 
-        }  
+        else
+        {
+            return false;
+        }
+    }
+
+    public bool GetRotationState()
+    {
+        return m_UsingRotate;
     }
 
     void Update()
@@ -76,9 +82,16 @@ public class ItemManager : MonoBehaviour
 
             m_ItemBoxPreview.z = m_MouseWheelValue;
             m_ItemBox.localPosition = m_ItemBoxPreview;
+            m_FixRotation = false;
         }
         else
         {
+            if (!m_FixRotation)
+            {
+                m_Rig[m_CurrentSlot].transform.localRotation = m_ItemBox.localRotation;
+                m_FixRotation = true;
+            }
+
             m_ItemBox.localPosition = m_DefaultPosition;
         }
     }
@@ -102,6 +115,18 @@ public class ItemManager : MonoBehaviour
         m_ItemIdentifier = _Object.GetComponent<ItemIdentifier>();
         m_ItemIdentifier.PickUpSound();
 
+        if (m_PhysicalObject[m_CurrentSlot].gameObject.GetComponent<Rigidbody>() != null)
+        {
+            m_Rig[m_CurrentSlot] = m_PhysicalObject[m_CurrentSlot].gameObject.GetComponent<Rigidbody>();
+            m_Rig[m_CurrentSlot].isKinematic = true;
+            m_Rig[m_CurrentSlot].useGravity = false;
+        }
+
+        if (!m_PhysicalObject[m_CurrentSlot].gameObject.activeSelf)
+        {
+            m_PhysicalObject[m_CurrentSlot].gameObject.SetActive(true);
+        }
+
         //=====================================
         m_PhysicalObject[m_CurrentSlot].layer = 3;
         for (int i = 0; i < m_PhysicalObject[m_CurrentSlot].transform.childCount; i++)
@@ -117,11 +142,7 @@ public class ItemManager : MonoBehaviour
             m_Key = m_PhysicalObject[m_CurrentSlot].gameObject.GetComponent<KeyIdentifier>();
         }
 
-        if (m_PhysicalObject[m_CurrentSlot].gameObject.GetComponent<Rigidbody>() != null)
-        {
-            m_Rig[m_CurrentSlot] = m_PhysicalObject[m_CurrentSlot].gameObject.GetComponent<Rigidbody>();
-            m_Rig[m_CurrentSlot].isKinematic = true;
-        }
+
     }
 
     public string GetCurrentItemName()
@@ -189,6 +210,12 @@ public class ItemManager : MonoBehaviour
 
         //=====================================
 
+        if (!m_PhysicalObject[m_CurrentSlot].gameObject.activeSelf)
+        {
+            m_PhysicalObject[m_CurrentSlot].gameObject.SetActive(true);
+        }
+
+
         if (m_Key)
         {
             m_Key = null;
@@ -198,6 +225,8 @@ public class ItemManager : MonoBehaviour
         m_ItemIdentifier = null;
 
         m_Rig[m_CurrentSlot].isKinematic = false;
+        m_Rig[m_CurrentSlot].useGravity = true;
+
         m_PhysicalObject[m_CurrentSlot].GetComponent<Collider>().enabled = true;
 
         m_PhysicalObject[m_CurrentSlot].transform.parent = null;
@@ -208,10 +237,11 @@ public class ItemManager : MonoBehaviour
 
     public void DeleteItem()
     {
-        Destroy(m_PhysicalObject[m_CurrentSlot]);
         m_Key = null;
-        m_Rig = null;
-        m_PhysicalObject[m_CurrentSlot] = null;   
+        m_Rig[m_CurrentSlot] = null;
+
+        Destroy(m_PhysicalObject[m_CurrentSlot]);
+        m_PhysicalObject[m_CurrentSlot] = null;
     }
 
     public void ClearVectors()
