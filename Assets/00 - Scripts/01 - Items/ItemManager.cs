@@ -8,6 +8,7 @@ public class ItemManager : MonoBehaviour
     [Header("General")]
     [SerializeField] int m_ItemSlots = 3;
     [Space]
+
     bool m_UsingRotate = false;
 
     public GameObject[] m_PhysicalObject;
@@ -36,6 +37,8 @@ public class ItemManager : MonoBehaviour
     KeyIdentifier m_Key = null;
     bool m_HoldingItem;
     bool m_FixRotation = true;
+
+    public UnityEvent m_OnUpdatedSlot;
 
     //============================ Objective Vars
 
@@ -147,7 +150,14 @@ public class ItemManager : MonoBehaviour
 
     public string GetCurrentItemName()
     {
-        return m_ItemIdentifier.GetName();
+        if (m_ItemIdentifier != null)
+        {
+            return m_ItemIdentifier.GetName();
+        }
+        else
+        {
+            return " ";
+        }
     }
 
     public void CycleSlots()
@@ -177,6 +187,7 @@ public class ItemManager : MonoBehaviour
         {
             m_ItemIdentifier = null;
         }
+        m_OnUpdatedSlot.Invoke();
     }
 
     public bool GetCurrentSlot()
