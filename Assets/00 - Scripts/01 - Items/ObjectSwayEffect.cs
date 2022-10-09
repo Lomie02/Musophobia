@@ -3,14 +3,16 @@ using System.Collections;
 
 public class ObjectSwayEffect : MonoBehaviour
 {
-    float amount = 50f;
-    float maxamount = 100f;
+    float amount = 1f;
+    float maxamount = 2f;
     float smooth = 3;
     private Quaternion def;
     private bool Paused = false;
 
+    ItemManager m_ItemManager = null;
     private void Start()
     {
+        m_ItemManager = FindObjectOfType<ItemManager>();
         def = transform.localRotation;
     }
     void Update()
@@ -20,7 +22,7 @@ public class ObjectSwayEffect : MonoBehaviour
         float factorZ = -Input.GetAxis("Vertical") * amount;
         //float factorZ = 0 * amount;
 
-        if (!Paused)
+        if (!Paused && !m_ItemManager.GetRotationState())
         {
             if (factorX > maxamount)
                 factorX = maxamount;

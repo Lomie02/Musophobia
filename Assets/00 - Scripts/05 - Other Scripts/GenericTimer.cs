@@ -20,6 +20,11 @@ public class GenericTimer : MonoBehaviour
     void Start()
     {
         Timer = Duration;
+
+        if (m_PlayTimerStart)
+        {
+            startTimer();
+        }
     }
 
     public void startTimer()
@@ -45,7 +50,5 @@ public class GenericTimer : MonoBehaviour
                 onFinish.Invoke();
             }
         }
-
-
     }
 }
