@@ -13,7 +13,7 @@ public class InventoryUIManager : MonoBehaviour
     void Start()
     {
         itemManager = FindObjectOfType<ItemManager>();
-        itemManager.OnUpdatedSlot.AddListener(UpdateUI);
+        itemManager.m_OnUpdatedSlot.AddListener(UpdateUI);
     }
 
     public void UpdateUI()

@@ -145,7 +145,7 @@ public class ItemManager : MonoBehaviour
             m_Key = m_PhysicalObject[m_CurrentSlot].gameObject.GetComponent<KeyIdentifier>();
         }
 
-
+        m_OnUpdatedSlot.Invoke();
     }
 
     public string GetCurrentItemName()
