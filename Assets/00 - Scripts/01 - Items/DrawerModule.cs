@@ -6,7 +6,6 @@ public class DrawerModule : MonoBehaviour
 {
     [SerializeField] Animator m_Animator;
     [SerializeField] bool m_OpenState = false;
-    [SerializeField] GameObject m_Icon;
 
     void Start()
     {

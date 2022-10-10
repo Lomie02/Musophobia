@@ -6,6 +6,7 @@ using UnityEngine.AI;
 using UnityEngine.Events;
 
 [RequireComponent(typeof(NavMeshAgent))]
+[RequireComponent(typeof(LookAt))]
 public class AIModule : MonoBehaviour
 {
     enum EnemyStates
@@ -22,7 +23,11 @@ public class AIModule : MonoBehaviour
 
     //===========================================
 
-    [Header("General")]
+    [Header("Locomotion")]
+    [SerializeField] bool m_UseLocomation = false;
+    [SerializeField] Vector3 worldDeltaPosition;
+
+    [Space]
 
     [SerializeField, Tooltip("MANUAL: Player can be assigned by user | TAG: System will automatically search for object with search tag.")] PlayerSearch m_PlayerSearch = PlayerSearch.TAG;
     [SerializeField, Tooltip("Tag to search for. (Requires TAG setting.)")] string m_SearchTag = "Player";
@@ -32,11 +37,12 @@ public class AIModule : MonoBehaviour
     [SerializeField, Tooltip("Cooldown bewteen random path finding.")] float m_WonderTime = 5f;
     float m_WonderTimer = 0;
     [SerializeField, Tooltip("How far the AI can see.")] float m_SearchDistance = 10f;
+    [SerializeField] float m_KillDistance = 1f;
 
     [SerializeField, Tooltip("NOTE: Changing this will affect the AI path finding!"), Space()] LayerMask m_SearchLayer;
 
     [Header("Movement")]
-    [SerializeField, Range(3, 50),Tooltip("The speed the AI will roam at.")] float m_RoamSpeed = 1f;
+    [SerializeField, Range(3, 50), Tooltip("The speed the AI will roam at.")] float m_RoamSpeed = 1f;
     [SerializeField, Range(0.5f, 100), Tooltip("The speed the AI will chase the Player at.")] float m_ChaseSpeed = 5f;
 
     //=========================================== AI chase
@@ -61,7 +67,7 @@ public class AIModule : MonoBehaviour
     [SerializeField] Animator m_Animator;
     Vector2 m_Velocity = Vector2.zero;
     Vector2 m_SmooothDeltaPosition = Vector2.zero;
-    
+
     //======================================= externals
     InputManager m_Input;
     GameManger m_GameManger;
@@ -82,7 +88,10 @@ public class AIModule : MonoBehaviour
             }
         }
 
-        //m_NavMeshAgent.updatePosition = false;
+        if (m_UseLocomation)
+        {
+            m_NavMeshAgent.updatePosition = false;
+        }
         m_Input = FindObjectOfType<InputManager>();
 
         m_NavMeshAgent = GetComponent<NavMeshAgent>();
@@ -115,10 +124,20 @@ public class AIModule : MonoBehaviour
                 ChasePlayer();
                 break;
         }
-        //UpdateNav();
+
+        if (m_UseLocomation)
+        {
+            UpdateNav();
+        }
         DistanceCheck();
+
+        if (m_UseLocomation)
+        {
+            if (worldDeltaPosition.magnitude > m_NavMeshAgent.radius)
+                transform.position = m_NavMeshAgent.nextPosition - 0.9f * worldDeltaPosition;
+        }
     }
-    
+
     void UpdateNav()
     {
         Vector3 worldDeltaPosition = m_NavMeshAgent.nextPosition - transform.position;
@@ -131,7 +150,7 @@ public class AIModule : MonoBehaviour
         float smooth = Mathf.Min(1.0f, Time.deltaTime);
         m_SmooothDeltaPosition = Vector2.Lerp(m_SmooothDeltaPosition, deltaPosition, smooth);
 
-        if(Time.deltaTime > 1e-5f)
+        if (Time.deltaTime > 1e-5f)
         {
             m_Velocity = m_SmooothDeltaPosition / Time.deltaTime;
         }
@@ -142,12 +161,18 @@ public class AIModule : MonoBehaviour
         m_Animator.SetFloat("velx", m_Velocity.x);
         m_Animator.SetFloat("vely", m_Velocity.y);
 
-        //GetComponent<LookAt>().lookAtTargetPosition = m_NavMeshAgent.steeringTarget + transform.forward;
+        if (m_UseLocomation)
+        {
+            GetComponent<LookAt>().m_LookAtPosition = m_NavMeshAgent.steeringTarget + transform.forward;
+        }
     }
 
-    private void OnAnimatorMove()
+    void OnAnimatorMove()
     {
-        transform.position = m_NavMeshAgent.nextPosition;
+        // Update position based on animation movement using navigation surface height
+        Vector3 position = m_Animator.rootPosition;
+        position.y = m_NavMeshAgent.nextPosition.y;
+        transform.position = position;
     }
 
     void ChasePlayer()
@@ -179,7 +204,7 @@ public class AIModule : MonoBehaviour
         {
             RaycastHit deathCast;
 
-            if (Physics.Raycast(transform.position, Direction, out deathCast, 3))
+            if (Physics.Raycast(transform.position, Direction, out deathCast, m_KillDistance))
             {
                 if (deathCast.collider.tag == "Player")
                 {
@@ -195,7 +220,7 @@ public class AIModule : MonoBehaviour
             {
 
                 SetAiSpeed(m_RoamSpeed);
-                m_IsChasing=false;
+                m_IsChasing = false;
 
                 m_ExitChase.Invoke();
                 m_EnterRoam.Invoke();

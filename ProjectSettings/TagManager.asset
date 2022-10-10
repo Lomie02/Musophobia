@@ -11,6 +11,7 @@ TagManager:
   - Interact
   - SlideDoor
   - Candle
+  - Camera
   layers:
   - Default
   - TransparentFX
@@ -18,7 +19,7 @@ TagManager:
   - Non-Light
   - Water
   - UI
-  - 
+  - Dust
   - 
   - 
   - 
