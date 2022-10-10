@@ -127,7 +127,7 @@ public class DoorModule : MonoBehaviour
         if (Physics.Raycast(m_PlayerView.transform.position, m_PlayerView.transform.forward, out hit, m_PickUpDistance))
         {
             m_TargetObject = hit.collider.gameObject;
-            if (hit.collider.tag == "Door" && m_PickingUp && hit.collider.GetComponent<DoorModule>().m_IsLocked == false)
+            if (hit.collider.GetComponent<DoorModule>() && m_PickingUp && hit.collider.GetComponent<DoorModule>().m_IsLocked == false)
             {
                 mIsHolding = true;
                 m_TargetObject.GetComponent<Rigidbody>().isKinematic = false;
