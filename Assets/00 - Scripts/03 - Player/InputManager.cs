@@ -131,7 +131,7 @@ public class InputManager : MonoBehaviour
         RaycastHit cast;
         if (Physics.Raycast(m_PlayerView.transform.position, m_PlayerView.transform.forward, out cast, 5))
         {
-            if (cast.collider.tag == "Item")
+            if (cast.collider.gameObject.GetComponent<ItemIdentifier>() != null)
             {
                 cast.collider.gameObject.transform.parent = null;
                 cast.collider.transform.forward = m_ItemBox.forward;
