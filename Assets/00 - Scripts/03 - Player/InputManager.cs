@@ -28,6 +28,11 @@ public class InputManager : MonoBehaviour
     [SerializeField] KeyCode m_CycleInventory = KeyCode.Q;
     [SerializeField] KeyCode m_DropItems = KeyCode.G;
 
+    [Space]
+    [SerializeField] KeyCode m_Inventory = KeyCode.I;
+    [SerializeField] GameObject m_Target;
+
+
     [Header("Controls & Tips")]
     [SerializeField] KeyCode m_Bind = KeyCode.T;
     [SerializeField] GameObject m_Dropdown;
@@ -57,6 +62,17 @@ public class InputManager : MonoBehaviour
             if (m_ItemManager.GetCurrentSlot())
             {
                 m_ItemManager.CyclePower();
+            }
+        }
+        if (Input.GetKeyDown(m_Inventory) && m_Target)
+        {
+            if (m_Target.activeSelf)
+            {
+                m_Target.SetActive(false);
+            }
+            else
+            {
+                m_Target.SetActive(true);
             }
         }
 
