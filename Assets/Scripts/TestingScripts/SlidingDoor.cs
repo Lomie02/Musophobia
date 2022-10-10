@@ -8,10 +8,6 @@ public class SlidingDoor : MonoBehaviour
 {
     Transform m_Location;
 
-    [SerializeField] string m_Tag = "SlidingDoor";
-
-    [Space]
-
     [SerializeField] float m_Min;
     [SerializeField] float m_Max;
     
@@ -33,7 +29,7 @@ public class SlidingDoor : MonoBehaviour
     private GameObject m_TargetObject;
     float m_DoorPickupRange = 5f;
     float m_DoorThrow = 10f;
-    float m_DoorDistance = 5f;
+    float m_DoorDistance = 2f;
     float m_DoorMaxGrab = 5f;
 
     void Start()
@@ -43,18 +39,6 @@ public class SlidingDoor : MonoBehaviour
 
         GetComponent<Rigidbody>().freezeRotation = true;
     }
-
-   /* void Update()
-    {
-        m_NewPos.x = m_Location.position.x;
-        m_NewPos.y = m_Location.position.y;
-        m_NewPos.z = m_Location.position.z;
-
-        m_NewPos.x = Mathf.Clamp(m_NewPos.x, m_Min, m_Max);
-
-        m_Location.position = m_NewPos;
-    }
-   */
 
     void FixedUpdate()
     {
@@ -99,7 +83,7 @@ public class SlidingDoor : MonoBehaviour
         if (Physics.Raycast(m_PlayerView.transform.position, m_PlayerView.transform.forward, out hit, 5))
         {
             m_TargetObject = hit.collider.gameObject;
-            if (hit.collider.tag == m_Tag && m_PickingUp)
+            if (hit.collider.gameObject.GetComponent<SlidingDoor>() && m_PickingUp)
             {
                 mIsHolding = true;
                 m_TargetObject.GetComponent<Rigidbody>().useGravity = true;
