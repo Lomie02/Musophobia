@@ -26,16 +26,16 @@ public class DoorModule : MonoBehaviour
     private float m_MaxDistanceGrab = 4f;
 
     private GameObject m_TargetObject;
-    public float m_ThrowStrength = 50f;
+     float m_ThrowStrength = 50f;
     private bool mIsHolding;
     private bool m_PickingUp;
 
     //======================================
 
-    public float m_DoorPickupRange = 2f;
-    public float m_DoorThrow = 10f;
-    public float m_DoorDistance = 2f;
-    public float m_DoorMaxGrab = 3f;
+    float m_DoorPickupRange = 2f;
+    float m_DoorThrow = 5f;
+    float m_DoorDistance = 1f;
+    float m_DoorMaxGrab = 2f;
 
     public bool RequestDoorOpen(KeyIdentifier _Id)
     {
@@ -130,6 +130,7 @@ public class DoorModule : MonoBehaviour
             if (hit.collider.tag == "Door" && m_PickingUp && hit.collider.GetComponent<DoorModule>().m_IsLocked == false)
             {
                 mIsHolding = true;
+                m_TargetObject.GetComponent<Rigidbody>().isKinematic = false;
                 m_TargetObject.GetComponent<Rigidbody>().useGravity = true;
                 m_TargetObject.GetComponent<Rigidbody>().freezeRotation = false;
                 /**/
@@ -164,9 +165,9 @@ public class DoorModule : MonoBehaviour
     {
         mIsHolding = false;
         m_PickingUp = false;
-        m_TargetObject.GetComponent<Rigidbody>().useGravity = true;
+        m_TargetObject.GetComponent<Rigidbody>().useGravity = false;
+        m_TargetObject.GetComponent<Rigidbody>().isKinematic = true;
         m_TargetObject.GetComponent<Rigidbody>().freezeRotation = false;
         m_TargetObject = null;
     }
-    //===========================================================
 }
