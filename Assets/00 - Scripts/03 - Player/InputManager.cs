@@ -217,7 +217,7 @@ public class InputManager : MonoBehaviour
                 NoteIdentifier temp;
                 temp = cast.collider.gameObject.GetComponent<NoteIdentifier>();
 
-                temp.ReadNote();
+                temp.CycleNote();
             }
         }
     }
