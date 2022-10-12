@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
+[RequireComponent(typeof(Rigidbody))]
 public class DoorModule : MonoBehaviour
 {
     [Header("General")]
@@ -90,7 +91,7 @@ public class DoorModule : MonoBehaviour
 
         if (!m_DoorJoint)
         {
-            Debug.LogError("Failed to assign door!");
+            Debug.LogError("Door: " + gameObject.name + " has no hinge & will not use hinge joints.");
         }
 
         mIsHolding = false;
