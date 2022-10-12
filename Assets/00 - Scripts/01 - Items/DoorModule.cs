@@ -37,6 +37,9 @@ public class DoorModule : MonoBehaviour
     float m_DoorDistance = 1f;
     float m_DoorMaxGrab = 2f;
 
+    Vector3 m_PreviousPos;
+    [SerializeField] AudioSource m_DoorMovingSound = null;
+
     public bool RequestDoorOpen(KeyIdentifier _Id)
     {
         if (_Id == null) { return false; }
@@ -94,6 +97,14 @@ public class DoorModule : MonoBehaviour
         m_PickingUp = false;
         m_TargetObject = null;
 
+        if (m_DoorMovingSound)
+        {
+            m_DoorMovingSound.loop = true;
+        }
+
+        gameObject.GetComponent<Rigidbody>().useGravity = false;
+        gameObject.GetComponent<Rigidbody>().isKinematic = true;
+
         m_PlayerView = GameObject.FindGameObjectWithTag("MainCamera");
     }
 
@@ -116,6 +127,24 @@ public class DoorModule : MonoBehaviour
             else if (mIsHolding)
             {
                 DropObject();
+            }
+        }
+
+
+        if (gameObject.GetComponent<Rigidbody>().rotation.y != m_PreviousPos.y)
+        {
+            if (m_DoorMovingSound)
+            {
+                m_DoorMovingSound.UnPause();
+            }
+
+            m_PreviousPos.y = gameObject.GetComponent<Rigidbody>().rotation.y;
+        }
+        else
+        {
+            if (m_DoorMovingSound)
+            {
+                m_DoorMovingSound.Pause();
             }
         }
     }
