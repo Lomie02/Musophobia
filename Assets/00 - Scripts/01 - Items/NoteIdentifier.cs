@@ -33,16 +33,19 @@ public class NoteIdentifier : MonoBehaviour
         if (m_IsReading)
         {
             m_PauseManager.UnFreeze();
+            m_OnStopReading.Invoke();
 
             m_Player.CursorState(false);
             m_Player.SetPlayerState(true);
 
             m_Canvas.SetActive(false);
             m_IsReading = false;
+
         }
         else
         {
             m_PauseManager.FreezeWorld();
+            m_OnRead.Invoke();
 
             m_Player.CursorState(true);
             m_Player.SetPlayerState(false);
