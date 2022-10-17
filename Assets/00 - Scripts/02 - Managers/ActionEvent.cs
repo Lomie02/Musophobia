@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Analytics;
 using UnityEngine.Events;
 
 
@@ -19,15 +20,14 @@ public class ActionEvent : MonoBehaviour
 
     [Space]
 
-    [Header("AI Settings")]
-    [SerializeField, Tooltip("The AI object")] GameObject m_TargetObject = null;
+    [Header("AI Settings | Optional")]
+    [SerializeField, Tooltip("The AI object")] GameObject m_RatObject = null;
     [SerializeField, Range(0, 15), Tooltip("How low does the distance need to be to register an Event.")] float m_ActivateDistance = 1f;
 
     [Space]
 
     [Header("Animations")]
 
-    [SerializeField] AnimationMode m_Version = AnimationMode.AnimationLegacy;
     [SerializeField, Tooltip("For animation driven events. Must match the version that is selected")] GameObject m_TargetAnimation;
 
     [Space]
@@ -36,7 +36,9 @@ public class ActionEvent : MonoBehaviour
 
     //==========================================
 
+    AnimationMode m_Version = AnimationMode.AnimationLegacy;
     AnimationClip m_AnimationClip;
+
     AnimatorClipInfo[] m_AnimatorClipArray;
     AnimationClip m_AnimatorClips;
 
@@ -52,12 +54,16 @@ public class ActionEvent : MonoBehaviour
     //==========================================
     private void Start()
     {
-        if (m_Version == AnimationMode.AnimationLegacy && m_TargetAnimation)
+        if (m_TargetAnimation.GetComponent<Animation>() && m_TargetAnimation)
         {
             m_TargetAnimation.SetActive(false);
             m_ANimationComponent = m_TargetAnimation.GetComponent<Animation>();
 
-            m_AnimationClip = m_ANimationComponent.clip;
+            m_Version = AnimationMode.AnimationLegacy;
+            if (m_ANimationComponent.clip != null)
+            {
+                m_AnimationClip = m_ANimationComponent.clip;
+            }
 
             m_ANimationComponent.playAutomatically = false;
             m_AnimationClip.wrapMode = WrapMode.Default;
@@ -65,13 +71,14 @@ public class ActionEvent : MonoBehaviour
             m_Timer = m_AnimationClip.length;
         }
 
-        if (m_Version == AnimationMode.Animator && m_TargetAnimation)
+        if (m_TargetAnimation.GetComponent<Animator>() && m_TargetAnimation)
         {
             m_TargetAnimation.SetActive(false);
+
+            m_Version = AnimationMode.Animator;
             m_Animator = m_TargetAnimation.GetComponent<Animator>();
 
             m_AnimatorClipArray = m_Animator.GetCurrentAnimatorClipInfo(0);
-
             m_AnimatorClips = m_AnimatorClipArray[0].clip;
 
             m_AnimationClip.wrapMode = WrapMode.Default;
@@ -79,7 +86,7 @@ public class ActionEvent : MonoBehaviour
         }
 
 
-        if (m_TargetObject)
+        if (m_RatObject)
         {
             m_DistanceCheck = true;
         }
@@ -137,7 +144,7 @@ public class ActionEvent : MonoBehaviour
         }
         if (m_DistanceCheck)
         {
-            float distance = Vector3.Distance(transform.position, m_TargetObject.transform.position);
+            float distance = Vector3.Distance(transform.position, m_RatObject.transform.position);
 
             if (distance <= m_ActivateDistance)
             {

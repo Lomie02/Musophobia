@@ -157,9 +157,12 @@ public class AIModule : MonoBehaviour
 
         bool shouldMove = m_Velocity.magnitude > 0.5f && m_NavMeshAgent.remainingDistance > m_NavMeshAgent.radius;
 
-        m_Animator.SetBool("Bool", shouldMove);
-        m_Animator.SetFloat("velx", m_Velocity.x);
-        m_Animator.SetFloat("vely", m_Velocity.y);
+        if (m_Animator)
+        {
+            m_Animator.SetBool("Bool", shouldMove);
+            m_Animator.SetFloat("velx", m_Velocity.x);
+            m_Animator.SetFloat("vely", m_Velocity.y);
+        }
 
         if (m_UseLocomation)
         {
@@ -169,10 +172,13 @@ public class AIModule : MonoBehaviour
 
     void OnAnimatorMove()
     {
-        // Update position based on animation movement using navigation surface height
-        Vector3 position = m_Animator.rootPosition;
-        position.y = m_NavMeshAgent.nextPosition.y;
-        transform.position = position;
+        if (m_Animator)
+        {
+            // Update position based on animation movement using navigation surface height
+            Vector3 position = m_Animator.rootPosition;
+            position.y = m_NavMeshAgent.nextPosition.y;
+            transform.position = position;
+        }
     }
 
     void ChasePlayer()
@@ -236,12 +242,10 @@ public class AIModule : MonoBehaviour
 
     private void SeekArea()
     {
-        m_WonderTimer -= Time.deltaTime;
-        if (m_WonderTimer < 1)
+        if (m_NavMeshAgent.remainingDistance <= m_NavMeshAgent.stoppingDistance)
         {
             Vector3 NewPositon = RandomPosition(transform.position, m_SearchDistance, m_SearchLayer);
             m_NavMeshAgent.SetDestination(NewPositon);
-            m_WonderTimer = m_WonderTime;
         }
     }
 
@@ -249,7 +253,6 @@ public class AIModule : MonoBehaviour
     {
         Vector3 NewPositon = RandomPosition(transform.position, m_SearchDistance, m_SearchLayer);
         m_NavMeshAgent.SetDestination(NewPositon);
-        m_WonderTimer = m_WonderTime;
     }
 
     private Vector3 RandomPosition(Vector3 _currentPos, float _Distance, int _Layer)
