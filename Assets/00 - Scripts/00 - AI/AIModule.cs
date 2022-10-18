@@ -7,6 +7,7 @@ using UnityEngine.Events;
 
 [RequireComponent(typeof(NavMeshAgent))]
 [RequireComponent(typeof(LookAt))]
+
 public class AIModule : MonoBehaviour
 {
     enum EnemyStates
@@ -73,6 +74,13 @@ public class AIModule : MonoBehaviour
     GameManger m_GameManger;
     bool m_IsChasing = false;
 
+    //========================================= Compression Rate
+    bool m_IsCompressing = false;
+    float m_Compression = 0;
+    float m_CompressionRate = 5;
+
+    SkinnedMeshRenderer m_SkinnedMeshRenderer;
+
     void Start()
     {
         if (m_PlayerSearch == PlayerSearch.TAG)
@@ -86,6 +94,11 @@ public class AIModule : MonoBehaviour
                 m_SearchTag = "Player";
                 m_Player = GameObject.FindGameObjectWithTag(m_SearchTag);
             }
+        }
+
+        if (GetComponentInChildren<SkinnedMeshRenderer>() != null)
+        {
+            m_SkinnedMeshRenderer = GetComponent<SkinnedMeshRenderer>();
         }
 
         if (m_UseLocomation)
@@ -168,6 +181,25 @@ public class AIModule : MonoBehaviour
         {
             GetComponent<LookAt>().m_LookAtPosition = m_NavMeshAgent.steeringTarget + transform.forward;
         }
+
+        if (m_SkinnedMeshRenderer)
+        {
+            UpdateCompression();
+        }
+    }
+
+    void UpdateCompression()
+    {
+        if (m_IsCompressing)
+        {
+            m_Compression += 1 * m_CompressionRate * Time.deltaTime;
+        }
+        else
+        {
+            m_Compression -= 1 * m_CompressionRate * Time.deltaTime;
+        }
+
+        m_Compression = Mathf.Clamp(m_Compression, 0, 100);
     }
 
     void OnAnimatorMove()
@@ -262,5 +294,33 @@ public class AIModule : MonoBehaviour
         NavMeshHit hit;
         NavMesh.SamplePosition(newPos, out hit, _Distance, _Layer);
         return hit.position;
+    }
+
+    /*
+        Compressing Blend shapes
+     */
+
+    public void CompressBlendshape()
+    {
+        if (!m_IsCompressing)
+        {
+            m_IsCompressing = true;
+        }
+        else
+        {
+            return;
+        }
+    }
+
+    public void CancelCompression()
+    {
+        if (m_IsCompressing)
+        {
+            m_IsCompressing = false;
+        }
+        else
+        {
+            return;
+        }
     }
 }
