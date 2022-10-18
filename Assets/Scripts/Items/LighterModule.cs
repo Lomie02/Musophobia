@@ -36,6 +36,8 @@ public class LighterModule : MonoBehaviour
 
         if (Physics.Raycast(m_Camera.transform.position, m_Camera.transform.forward, out cast, 4))
         {
+            Debug.Log(cast.collider.gameObject.name);
+
             if (cast.collider.GetComponent<CandleIdentifier>() != null)
             {
                 CandleIdentifier temp = cast.collider.gameObject.GetComponent<CandleIdentifier>();
