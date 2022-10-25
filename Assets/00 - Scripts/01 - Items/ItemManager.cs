@@ -2,13 +2,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+
 public class ItemManager : MonoBehaviour
 {
     [Header("General")]
-    public bool m_UsingRotate = false;
+    [SerializeField] int m_ItemSlots = 3;
+    [Space]
+
+    bool m_UsingRotate = false;
+
     public GameObject[] m_PhysicalObject;
-    public int m_CurrentSlot = 0;
-    public Rigidbody[] m_Rig = null;
+    int m_CurrentSlot = 0;
+    Rigidbody[] m_Rig = null;
 
     [Header("Rotation")]
     public float m_RotateSpeed = 12;
@@ -31,17 +36,48 @@ public class ItemManager : MonoBehaviour
 
     KeyIdentifier m_Key = null;
     bool m_HoldingItem;
+    bool m_FixRotation = true;
+
+    public UnityEvent m_OnUpdatedSlot;
+    float m_LastWheelValue;
+
+    //============================ Objective Vars
 
     void Start()
     {
-        m_PhysicalObject = new GameObject[3];
+        m_PhysicalObject = new GameObject[m_ItemSlots];
         m_Rig = new Rigidbody[m_PhysicalObject.Length];
 
+        m_LastWheelValue = Input.mouseScrollDelta.y;
         m_ItemBox.localPosition = m_DefaultPosition;
+    }
+
+    public bool IsKeySlot()
+    {
+        if (m_PhysicalObject[m_CurrentSlot].GetComponent<KeyIdentifier>() && m_PhysicalObject[m_CurrentSlot] != null)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    public bool GetRotationState()
+    {
+        return m_UsingRotate;
     }
 
     void Update()
     {
+        if (Input.mouseScrollDelta.y != m_LastWheelValue)
+        {
+            CycleSlots();
+            m_LastWheelValue = Input.mouseScrollDelta.y;
+        }
+
+
         if (m_PhysicalObject[m_CurrentSlot] && m_UsingRotate)
         {
             float MX = Input.GetAxis("Mouse X") * m_RotateSpeed * Time.deltaTime;
@@ -58,9 +94,16 @@ public class ItemManager : MonoBehaviour
 
             m_ItemBoxPreview.z = m_MouseWheelValue;
             m_ItemBox.localPosition = m_ItemBoxPreview;
+            m_FixRotation = false;
         }
         else
         {
+            if (!m_FixRotation)
+            {
+                m_Rig[m_CurrentSlot].transform.localRotation = m_ItemBox.localRotation;
+                m_FixRotation = true;
+            }
+
             m_ItemBox.localPosition = m_DefaultPosition;
         }
     }
@@ -84,16 +127,54 @@ public class ItemManager : MonoBehaviour
         m_ItemIdentifier = _Object.GetComponent<ItemIdentifier>();
         m_ItemIdentifier.PickUpSound();
 
-        if (m_PhysicalObject[m_CurrentSlot].gameObject.GetComponent<KeyIdentifier>() != null)
-        {
-            m_Key = m_PhysicalObject[m_CurrentSlot].gameObject.GetComponent<KeyIdentifier>();
-            m_PhysicalObject[m_CurrentSlot].gameObject.GetComponent<Renderer>().enabled = false;
-        }
-
         if (m_PhysicalObject[m_CurrentSlot].gameObject.GetComponent<Rigidbody>() != null)
         {
             m_Rig[m_CurrentSlot] = m_PhysicalObject[m_CurrentSlot].gameObject.GetComponent<Rigidbody>();
             m_Rig[m_CurrentSlot].isKinematic = true;
+            m_Rig[m_CurrentSlot].useGravity = false;
+        }
+
+        if (!m_PhysicalObject[m_CurrentSlot].gameObject.activeSelf)
+        {
+            m_PhysicalObject[m_CurrentSlot].gameObject.SetActive(true);
+        }
+
+        //=====================================
+        m_PhysicalObject[m_CurrentSlot].layer = 3;
+        for (int i = 0; i < m_PhysicalObject[m_CurrentSlot].transform.childCount; i++)
+        {
+            if (m_PhysicalObject[m_CurrentSlot].transform.GetChild(i).gameObject.activeSelf == false)
+            {
+                m_PhysicalObject[m_CurrentSlot].transform.GetChild(i).gameObject.SetActive(true);
+                m_PhysicalObject[m_CurrentSlot].transform.GetChild(i).gameObject.layer = 3;
+                m_PhysicalObject[m_CurrentSlot].transform.GetChild(i).gameObject.SetActive(false);
+            }
+            else
+            {
+                m_PhysicalObject[m_CurrentSlot].transform.GetChild(i).gameObject.layer = 3;
+            }
+        }
+
+        //=====================================
+
+
+        if (m_PhysicalObject[m_CurrentSlot].gameObject.GetComponent<KeyIdentifier>() != null)
+        {
+            m_Key = m_PhysicalObject[m_CurrentSlot].gameObject.GetComponent<KeyIdentifier>();
+        }
+
+        m_OnUpdatedSlot.Invoke();
+    }
+
+    public string GetCurrentItemName()
+    {
+        if (m_ItemIdentifier != null)
+        {
+            return m_ItemIdentifier.GetName();
+        }
+        else
+        {
+            return " ";
         }
     }
 
@@ -124,6 +205,7 @@ public class ItemManager : MonoBehaviour
         {
             m_ItemIdentifier = null;
         }
+        m_OnUpdatedSlot.Invoke();
     }
 
     public bool GetCurrentSlot()
@@ -148,9 +230,32 @@ public class ItemManager : MonoBehaviour
         YVal = 0;
         XVal = 0;
 
+        //=====================================
+
+        m_PhysicalObject[m_CurrentSlot].layer = 0;
+        for (int i = 0; i < m_PhysicalObject[m_CurrentSlot].transform.childCount; i++)
+        {
+            if (m_PhysicalObject[m_CurrentSlot].transform.GetChild(i).gameObject.activeSelf == false)
+            {
+                m_PhysicalObject[m_CurrentSlot].transform.GetChild(i).gameObject.SetActive(true);
+                m_PhysicalObject[m_CurrentSlot].transform.GetChild(i).gameObject.layer = 0;
+                m_PhysicalObject[m_CurrentSlot].transform.GetChild(i).gameObject.SetActive(false);
+            }
+            else
+            {
+                m_PhysicalObject[m_CurrentSlot].transform.GetChild(i).gameObject.layer = 0;
+            }
+        }
+
+        //=====================================
+
+        if (!m_PhysicalObject[m_CurrentSlot].gameObject.activeSelf)
+        {
+            m_PhysicalObject[m_CurrentSlot].gameObject.SetActive(true);
+        }
+
         if (m_Key)
         {
-            m_PhysicalObject[m_CurrentSlot].gameObject.GetComponent<Renderer>().enabled = true;
             m_Key = null;
         }
 
@@ -158,18 +263,23 @@ public class ItemManager : MonoBehaviour
         m_ItemIdentifier = null;
 
         m_Rig[m_CurrentSlot].isKinematic = false;
+        m_Rig[m_CurrentSlot].useGravity = true;
+
         m_PhysicalObject[m_CurrentSlot].GetComponent<Collider>().enabled = true;
 
         m_PhysicalObject[m_CurrentSlot].transform.parent = null;
+
         m_Rig[m_CurrentSlot] = null;
         m_PhysicalObject[m_CurrentSlot] = null;
     }
 
     public void DeleteItem()
     {
-        Destroy(m_PhysicalObject[m_CurrentSlot]);
         m_Key = null;
-        m_Rig = null;
+        m_Rig[m_CurrentSlot] = null;
+
+        Destroy(m_PhysicalObject[m_CurrentSlot]);
+        m_PhysicalObject[m_CurrentSlot] = null;
     }
 
     public void ClearVectors()

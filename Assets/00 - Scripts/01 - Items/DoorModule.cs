@@ -3,22 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
+[RequireComponent(typeof(Rigidbody))]
 public class DoorModule : MonoBehaviour
 {
     [Header("General")]
 
-    [SerializeField] Collider m_Barrier;
     [SerializeField] int m_DoorId;
     [SerializeField] bool m_LockedStart = true;
-
-    [Header("Destruction")]
-    [SerializeField, Tooltip("When enabled, the door can be ripped off its hinges with enough force.")] bool m_Destructable = false;
-    [SerializeField, Tooltip("The amount of force needed to break a door.")] float m_DestructionForce = 20f;
 
     [Header("Events")]
     [SerializeField, Space] UnityEvent m_OnDoorUnlocked;
     [SerializeField, Space] UnityEvent m_OnIncorrectKey;
-    [SerializeField, Space] UnityEvent m_OnDoorBreak;
 
     bool m_IsLocked = true;
     HingeJoint m_DoorJoint;
@@ -32,17 +27,22 @@ public class DoorModule : MonoBehaviour
     private float m_MaxDistanceGrab = 4f;
 
     private GameObject m_TargetObject;
-    public float m_ThrowStrength = 50f;
+     float m_ThrowStrength = 50f;
     private bool mIsHolding;
     private bool m_PickingUp;
 
     //======================================
 
-    public float m_DoorPickupRange = 2f;
-    public float m_DoorThrow = 10f;
-    public float m_DoorDistance = 2f;
-    public float m_DoorMaxGrab = 3f;
+    float m_DoorPickupRange = 2f;
+    float m_DoorThrow = 5f;
+    float m_DoorDistance = 1f;
+    float m_DoorMaxGrab = 2f;
 
+    Vector3 m_PreviousPos;
+    [SerializeField] AudioSource m_DoorMovingSound = null;
+    InputManager m_InputManager;
+
+    //================= 
     public bool RequestDoorOpen(KeyIdentifier _Id)
     {
         if (_Id == null) { return false; }
@@ -50,7 +50,6 @@ public class DoorModule : MonoBehaviour
         if (m_IsLocked && _Id.GetKeyID() == m_DoorId)
         {
             m_IsLocked = false;
-            m_Barrier.gameObject.GetComponent<BoxCollider>().enabled = false;
 
             if (m_OnDoorUnlocked != null)
             {
@@ -61,6 +60,7 @@ public class DoorModule : MonoBehaviour
         }
         else
         {
+                
             if (m_OnIncorrectKey != null)
             {
                 m_OnIncorrectKey.Invoke();
@@ -77,19 +77,11 @@ public class DoorModule : MonoBehaviour
     public void SetLockState(bool _state)
     {
         m_IsLocked = _state;
-        m_Barrier.gameObject.SetActive(m_IsLocked);
     }
     void Start()
     {
         m_DoorJoint = GetComponent<HingeJoint>();
-        Physics.IgnoreCollision(gameObject.GetComponent<Collider>(), m_Barrier);
-
-        if (m_Barrier)
-        {
-            Physics.IgnoreCollision(gameObject.GetComponent<Collider>(), m_Barrier.GetComponent<Collider>());
-        }
-
-
+        m_InputManager = FindObjectOfType<InputManager>();
         if (m_LockedStart)
         {
             SetLockState(m_LockedStart);
@@ -99,39 +91,31 @@ public class DoorModule : MonoBehaviour
             SetLockState(m_LockedStart);
         }
 
-        if (m_Destructable)
-        {
-            m_DoorJoint.breakForce = m_DestructionForce;
-        }
-        else
-        {
-            m_DoorJoint.breakForce = float.PositiveInfinity;
-        }
-
         if (!m_DoorJoint)
         {
-            Debug.LogError("Failed to assign door!");
+            Debug.LogError("Door: " + gameObject.name + " has no hinge & will not use hinge joints.");
         }
 
         mIsHolding = false;
         m_PickingUp = false;
         m_TargetObject = null;
 
+        if (m_DoorMovingSound)
+        {
+            m_DoorMovingSound.loop = true;
+        }
+
+        gameObject.GetComponent<Rigidbody>().useGravity = false;
+        gameObject.GetComponent<Rigidbody>().isKinematic = true;
+
         m_PlayerView = GameObject.FindGameObjectWithTag("MainCamera");
     }
 
-    private void OnJointBreak(float breakForce)
-    {
-        if (m_OnDoorBreak != null)
-        {
-            m_OnDoorBreak.Invoke();
-        }
-    }
     void FixedUpdate()
     {
         if (m_IsLocked == false)
         {
-            if (Input.GetKey(KeyCode.Mouse0) && !m_IsLocked)
+            if (Input.GetKey(m_InputManager.GetDoorBind()) && !m_IsLocked)
             {
                 if (!mIsHolding)
                 {
@@ -148,6 +132,24 @@ public class DoorModule : MonoBehaviour
                 DropObject();
             }
         }
+
+
+        if (gameObject.GetComponent<Rigidbody>().rotation.y != m_PreviousPos.y)
+        {
+            if (m_DoorMovingSound)
+            {
+                m_DoorMovingSound.UnPause();
+            }
+
+            m_PreviousPos.y = gameObject.GetComponent<Rigidbody>().rotation.y;
+        }
+        else
+        {
+            if (m_DoorMovingSound)
+            {
+                m_DoorMovingSound.Pause();
+            }
+        }
     }
 
     private void tryPickObject()
@@ -157,9 +159,10 @@ public class DoorModule : MonoBehaviour
         if (Physics.Raycast(m_PlayerView.transform.position, m_PlayerView.transform.forward, out hit, m_PickUpDistance))
         {
             m_TargetObject = hit.collider.gameObject;
-            if (hit.collider.tag == "Door" && m_PickingUp && hit.collider.GetComponent<DoorModule>().m_IsLocked == false)
+            if (hit.collider.GetComponent<DoorModule>() && m_PickingUp && hit.collider.GetComponent<DoorModule>().m_IsLocked == false)
             {
                 mIsHolding = true;
+                m_TargetObject.GetComponent<Rigidbody>().isKinematic = false;
                 m_TargetObject.GetComponent<Rigidbody>().useGravity = true;
                 m_TargetObject.GetComponent<Rigidbody>().freezeRotation = false;
                 /**/
@@ -194,9 +197,9 @@ public class DoorModule : MonoBehaviour
     {
         mIsHolding = false;
         m_PickingUp = false;
-        m_TargetObject.GetComponent<Rigidbody>().useGravity = true;
+        m_TargetObject.GetComponent<Rigidbody>().useGravity = false;
+        m_TargetObject.GetComponent<Rigidbody>().isKinematic = true;
         m_TargetObject.GetComponent<Rigidbody>().freezeRotation = false;
         m_TargetObject = null;
     }
-    //===========================================================
 }
