@@ -43,7 +43,7 @@ public class AIModule : MonoBehaviour
     [SerializeField, Tooltip("NOTE: Changing this will affect the AI path finding!"), Space()] LayerMask m_SearchLayer;
 
     [Header("Movement")]
-    [SerializeField, Range(3, 50), Tooltip("The speed the AI will roam at.")] float m_RoamSpeed = 1f;
+    [SerializeField, Range(0.01f, 50), Tooltip("The speed the AI will roam at.")] float m_RoamSpeed = 1f;
     [SerializeField, Range(0.5f, 100), Tooltip("The speed the AI will chase the Player at.")] float m_ChaseSpeed = 5f;
 
     //=========================================== AI chase
@@ -100,6 +100,7 @@ public class AIModule : MonoBehaviour
         {
             m_SkinnedMeshRenderer = GetComponent<SkinnedMeshRenderer>();
         }
+        m_NavMeshAgent = GetComponent<NavMeshAgent>();
 
         if (m_UseLocomation)
         {
@@ -107,7 +108,6 @@ public class AIModule : MonoBehaviour
         }
         m_Input = FindObjectOfType<InputManager>();
 
-        m_NavMeshAgent = GetComponent<NavMeshAgent>();
         m_WonderTimer = m_WonderTime;
         m_AiStates = EnemyStates.ROAM;
 
