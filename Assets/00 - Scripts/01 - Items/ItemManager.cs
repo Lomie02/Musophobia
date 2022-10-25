@@ -39,6 +39,7 @@ public class ItemManager : MonoBehaviour
     bool m_FixRotation = true;
 
     public UnityEvent m_OnUpdatedSlot;
+    float m_LastWheelValue;
 
     //============================ Objective Vars
 
@@ -47,6 +48,7 @@ public class ItemManager : MonoBehaviour
         m_PhysicalObject = new GameObject[m_ItemSlots];
         m_Rig = new Rigidbody[m_PhysicalObject.Length];
 
+        m_LastWheelValue = Input.mouseScrollDelta.y;
         m_ItemBox.localPosition = m_DefaultPosition;
     }
 
@@ -69,6 +71,13 @@ public class ItemManager : MonoBehaviour
 
     void Update()
     {
+        if (Input.mouseScrollDelta.y != m_LastWheelValue)
+        {
+            CycleSlots();
+            m_LastWheelValue = Input.mouseScrollDelta.y;
+        }
+
+
         if (m_PhysicalObject[m_CurrentSlot] && m_UsingRotate)
         {
             float MX = Input.GetAxis("Mouse X") * m_RotateSpeed * Time.deltaTime;
