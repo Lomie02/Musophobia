@@ -22,8 +22,10 @@ public class InputManager : MonoBehaviour
 
     [Header("Key Binds")]
     [SerializeField] KeyCode m_FlashLight = KeyCode.F;
+    [SerializeField] KeyCode m_DoorInteraction = KeyCode.Mouse0;
     [SerializeField] KeyCode m_PowerItems = KeyCode.Mouse1;
     [SerializeField] KeyCode m_InspectItems = KeyCode.R;
+
     [SerializeField] KeyCode m_Interact = KeyCode.E;
     [SerializeField] KeyCode m_CycleInventory = KeyCode.Q;
     [SerializeField] KeyCode m_DropItems = KeyCode.G;
@@ -124,6 +126,11 @@ public class InputManager : MonoBehaviour
         }
 
         ScanForDrawer();
+    }
+
+    public KeyCode GetDoorBind()
+    {
+        return m_DoorInteraction;
     }
 
     public void Searchitem()

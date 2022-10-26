@@ -40,7 +40,9 @@ public class DoorModule : MonoBehaviour
 
     Vector3 m_PreviousPos;
     [SerializeField] AudioSource m_DoorMovingSound = null;
+    InputManager m_InputManager;
 
+    //================= 
     public bool RequestDoorOpen(KeyIdentifier _Id)
     {
         if (_Id == null) { return false; }
@@ -79,7 +81,7 @@ public class DoorModule : MonoBehaviour
     void Start()
     {
         m_DoorJoint = GetComponent<HingeJoint>();
-
+        m_InputManager = FindObjectOfType<InputManager>();
         if (m_LockedStart)
         {
             SetLockState(m_LockedStart);
@@ -113,7 +115,7 @@ public class DoorModule : MonoBehaviour
     {
         if (m_IsLocked == false)
         {
-            if (Input.GetKey(KeyCode.Mouse0) && !m_IsLocked)
+            if (Input.GetKey(m_InputManager.GetDoorBind()) && !m_IsLocked)
             {
                 if (!mIsHolding)
                 {

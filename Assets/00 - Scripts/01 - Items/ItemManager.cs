@@ -39,6 +39,7 @@ public class ItemManager : MonoBehaviour
     bool m_FixRotation = true;
 
     public UnityEvent m_OnUpdatedSlot;
+    float m_LastWheelValue;
 
     //============================ Objective Vars
 
@@ -47,6 +48,7 @@ public class ItemManager : MonoBehaviour
         m_PhysicalObject = new GameObject[m_ItemSlots];
         m_Rig = new Rigidbody[m_PhysicalObject.Length];
 
+        m_LastWheelValue = Input.mouseScrollDelta.y;
         m_ItemBox.localPosition = m_DefaultPosition;
     }
 
@@ -69,6 +71,13 @@ public class ItemManager : MonoBehaviour
 
     void Update()
     {
+        if (Input.mouseScrollDelta.y != m_LastWheelValue)
+        {
+            CycleSlots();
+            m_LastWheelValue = Input.mouseScrollDelta.y;
+        }
+
+
         if (m_PhysicalObject[m_CurrentSlot] && m_UsingRotate)
         {
             float MX = Input.GetAxis("Mouse X") * m_RotateSpeed * Time.deltaTime;
@@ -134,7 +143,16 @@ public class ItemManager : MonoBehaviour
         m_PhysicalObject[m_CurrentSlot].layer = 3;
         for (int i = 0; i < m_PhysicalObject[m_CurrentSlot].transform.childCount; i++)
         {
-            m_PhysicalObject[m_CurrentSlot].transform.GetChild(i).gameObject.layer = 3;
+            if (m_PhysicalObject[m_CurrentSlot].transform.GetChild(i).gameObject.activeSelf == false)
+            {
+                m_PhysicalObject[m_CurrentSlot].transform.GetChild(i).gameObject.SetActive(true);
+                m_PhysicalObject[m_CurrentSlot].transform.GetChild(i).gameObject.layer = 3;
+                m_PhysicalObject[m_CurrentSlot].transform.GetChild(i).gameObject.SetActive(false);
+            }
+            else
+            {
+                m_PhysicalObject[m_CurrentSlot].transform.GetChild(i).gameObject.layer = 3;
+            }
         }
 
         //=====================================
@@ -213,10 +231,20 @@ public class ItemManager : MonoBehaviour
         XVal = 0;
 
         //=====================================
+
         m_PhysicalObject[m_CurrentSlot].layer = 0;
         for (int i = 0; i < m_PhysicalObject[m_CurrentSlot].transform.childCount; i++)
         {
-            m_PhysicalObject[m_CurrentSlot].transform.GetChild(i).gameObject.layer = 0;
+            if (m_PhysicalObject[m_CurrentSlot].transform.GetChild(i).gameObject.activeSelf == false)
+            {
+                m_PhysicalObject[m_CurrentSlot].transform.GetChild(i).gameObject.SetActive(true);
+                m_PhysicalObject[m_CurrentSlot].transform.GetChild(i).gameObject.layer = 0;
+                m_PhysicalObject[m_CurrentSlot].transform.GetChild(i).gameObject.SetActive(false);
+            }
+            else
+            {
+                m_PhysicalObject[m_CurrentSlot].transform.GetChild(i).gameObject.layer = 0;
+            }
         }
 
         //=====================================
@@ -225,7 +253,6 @@ public class ItemManager : MonoBehaviour
         {
             m_PhysicalObject[m_CurrentSlot].gameObject.SetActive(true);
         }
-
 
         if (m_Key)
         {
