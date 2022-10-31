@@ -26,7 +26,7 @@ public class AIModule : MonoBehaviour
 
     [Header("Locomotion")]
     [SerializeField] bool m_UseLocomation = false;
-    [SerializeField] Vector3 worldDeltaPosition;
+     Vector2 worldDeltaPosition = Vector2.zero;
 
     [Space]
 
@@ -101,13 +101,14 @@ public class AIModule : MonoBehaviour
             m_SkinnedMeshRenderer = GetComponent<SkinnedMeshRenderer>();
         }
 
+        m_NavMeshAgent = GetComponent<NavMeshAgent>();
+
         if (m_UseLocomation)
         {
             m_NavMeshAgent.updatePosition = false;
         }
         m_Input = FindObjectOfType<InputManager>();
 
-        m_NavMeshAgent = GetComponent<NavMeshAgent>();
         m_WonderTimer = m_WonderTime;
         m_AiStates = EnemyStates.ROAM;
 
@@ -127,7 +128,7 @@ public class AIModule : MonoBehaviour
 
     void Update()
     {
-        switch (m_AiStates)
+       switch (m_AiStates)
         {
             case EnemyStates.ROAM:
                 SeekArea();
@@ -144,11 +145,6 @@ public class AIModule : MonoBehaviour
         }
         DistanceCheck();
 
-        if (m_UseLocomation)
-        {
-            if (worldDeltaPosition.magnitude > m_NavMeshAgent.radius)
-                transform.position = m_NavMeshAgent.nextPosition - 0.9f * worldDeltaPosition;
-        }
     }
 
     void UpdateNav()
@@ -165,7 +161,7 @@ public class AIModule : MonoBehaviour
 
         if (Time.deltaTime > 1e-5f)
         {
-            m_Velocity = m_SmooothDeltaPosition / Time.deltaTime;
+            m_Velocity = m_SmooothDeltaPosition / Time.deltaTime/0.15f;
         }
 
         bool shouldMove = m_Velocity.magnitude > 0.5f && m_NavMeshAgent.remainingDistance > m_NavMeshAgent.radius;
@@ -185,6 +181,12 @@ public class AIModule : MonoBehaviour
         if (m_SkinnedMeshRenderer)
         {
             UpdateCompression();
+        }
+
+        if (m_UseLocomation)
+        {
+            if (worldDeltaPosition.magnitude > m_NavMeshAgent.radius)
+                transform.position = m_NavMeshAgent.nextPosition - 0.9f * worldDeltaPosition;
         }
     }
 
