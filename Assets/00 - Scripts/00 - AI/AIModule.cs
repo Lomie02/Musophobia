@@ -26,7 +26,7 @@ public class AIModule : MonoBehaviour
 
     [Header("Locomotion")]
     [SerializeField] bool m_UseLocomation = false;
-     Vector2 worldDeltaPosition = Vector2.zero;
+    Vector2 worldDeltaPosition = Vector2.zero;
 
     [Space]
 
@@ -79,9 +79,8 @@ public class AIModule : MonoBehaviour
     float m_Compression = 0;
 
     [Header("Door Transitions")]
-    [SerializeField] float m_CompressionRate = 5;
+    [SerializeField, Range(0f,0.5f)] float m_CompressionRate = 0.2f;
 
-    SkinnedMeshRenderer m_SkinnedMeshRenderer;
 
     void Start()
     {
@@ -97,12 +96,6 @@ public class AIModule : MonoBehaviour
                 m_Player = GameObject.FindGameObjectWithTag(m_SearchTag);
             }
         }
-
-        if (GetComponentInChildren<SkinnedMeshRenderer>() != null)
-        {
-            m_SkinnedMeshRenderer = GetComponent<SkinnedMeshRenderer>();
-        }
-        m_NavMeshAgent = GetComponent<NavMeshAgent>();
 
         m_NavMeshAgent = GetComponent<NavMeshAgent>();
 
@@ -131,7 +124,7 @@ public class AIModule : MonoBehaviour
 
     void Update()
     {
-       switch (m_AiStates)
+        switch (m_AiStates)
         {
             case EnemyStates.ROAM:
                 SeekArea();
@@ -141,6 +134,8 @@ public class AIModule : MonoBehaviour
                 ChasePlayer();
                 break;
         }
+
+        UpdateCompression();
 
         if (m_UseLocomation)
         {
@@ -164,7 +159,7 @@ public class AIModule : MonoBehaviour
 
         if (Time.deltaTime > 1e-5f)
         {
-            m_Velocity = m_SmooothDeltaPosition / Time.deltaTime/0.15f;
+            m_Velocity = m_SmooothDeltaPosition / Time.deltaTime / 0.15f;
         }
 
         bool shouldMove = m_Velocity.magnitude > 0.5f && m_NavMeshAgent.remainingDistance > m_NavMeshAgent.radius;
@@ -181,47 +176,30 @@ public class AIModule : MonoBehaviour
             GetComponent<LookAt>().m_LookAtPosition = m_NavMeshAgent.steeringTarget + transform.forward;
         }
 
-        if (m_SkinnedMeshRenderer)
-        {
-            UpdateCompression();
-        }
-        
+
         if (m_UseLocomation)
         {
             //if (worldDeltaPosition.magnitude > m_NavMeshAgent.radius)
             //transform.position = m_NavMeshAgent.nextPosition - 0.9f * worldDeltaPosition;
             transform.position = m_NavMeshAgent.nextPosition;
         }
-        
+
     }
 
     void UpdateCompression()
     {
         if (m_IsCompressing)
         {
-            m_Compression += 1 * m_CompressionRate * Time.deltaTime;
+            m_Compression += m_CompressionRate * Time.deltaTime;
         }
         else
         {
-            m_Compression -= 1 * m_CompressionRate * Time.deltaTime;
+            m_Compression -= m_CompressionRate * Time.deltaTime;
         }
 
-        m_Compression = Mathf.Clamp(m_Compression, 0, 100);
+        m_Compression = Mathf.Clamp(m_Compression, 0, 1);
         m_Animator.SetLayerWeight(1, m_Compression);
     }
-
-    /*
-    void OnAnimatorMove()
-    {
-        if (m_Animator)
-        {
-            // Update position based on animation movement using navigation surface height
-            Vector3 position = m_Animator.rootPosition;
-            position.y = m_NavMeshAgent.nextPosition.y;
-            transform.position = position;
-        }
-    }
-    */
 
     void ChasePlayer()
     {
