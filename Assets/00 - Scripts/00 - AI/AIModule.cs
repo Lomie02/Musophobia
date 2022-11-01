@@ -77,7 +77,9 @@ public class AIModule : MonoBehaviour
     //========================================= Compression Rate
     bool m_IsCompressing = false;
     float m_Compression = 0;
-    float m_CompressionRate = 5;
+
+    [Header("Door Transitions")]
+    [SerializeField] float m_CompressionRate = 5;
 
     SkinnedMeshRenderer m_SkinnedMeshRenderer;
 
@@ -100,6 +102,7 @@ public class AIModule : MonoBehaviour
         {
             m_SkinnedMeshRenderer = GetComponent<SkinnedMeshRenderer>();
         }
+        m_NavMeshAgent = GetComponent<NavMeshAgent>();
 
         m_NavMeshAgent = GetComponent<NavMeshAgent>();
 
@@ -204,6 +207,7 @@ public class AIModule : MonoBehaviour
         }
 
         m_Compression = Mathf.Clamp(m_Compression, 0, 100);
+        m_Animator.SetLayerWeight(1, m_Compression);
     }
 
     /*
@@ -227,8 +231,6 @@ public class AIModule : MonoBehaviour
     void DistanceCheck()
     {
         float Distance = Vector3.Distance(transform.position, m_Player.transform.position);
-
-
 
         Vector3 Direction = m_Player.transform.position - transform.position;
 
