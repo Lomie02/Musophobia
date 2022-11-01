@@ -26,7 +26,7 @@ public class AIModule : MonoBehaviour
 
     [Header("Locomotion")]
     [SerializeField] bool m_UseLocomation = false;
-    [SerializeField] Vector3 worldDeltaPosition;
+     Vector2 worldDeltaPosition = Vector2.zero;
 
     [Space]
 
@@ -43,7 +43,7 @@ public class AIModule : MonoBehaviour
     [SerializeField, Tooltip("NOTE: Changing this will affect the AI path finding!"), Space()] LayerMask m_SearchLayer;
 
     [Header("Movement")]
-    [SerializeField, Range(0.01f, 50), Tooltip("The speed the AI will roam at.")] float m_RoamSpeed = 1f;
+    [SerializeField, Range(0, 50), Tooltip("The speed the AI will roam at.")] float m_RoamSpeed = 1f;
     [SerializeField, Range(0.5f, 100), Tooltip("The speed the AI will chase the Player at.")] float m_ChaseSpeed = 5f;
 
     //=========================================== AI chase
@@ -102,6 +102,8 @@ public class AIModule : MonoBehaviour
         }
         m_NavMeshAgent = GetComponent<NavMeshAgent>();
 
+        m_NavMeshAgent = GetComponent<NavMeshAgent>();
+
         if (m_UseLocomation)
         {
             m_NavMeshAgent.updatePosition = false;
@@ -127,7 +129,7 @@ public class AIModule : MonoBehaviour
 
     void Update()
     {
-        switch (m_AiStates)
+       switch (m_AiStates)
         {
             case EnemyStates.ROAM:
                 SeekArea();
@@ -144,11 +146,6 @@ public class AIModule : MonoBehaviour
         }
         DistanceCheck();
 
-        if (m_UseLocomation)
-        {
-            if (worldDeltaPosition.magnitude > m_NavMeshAgent.radius)
-                transform.position = m_NavMeshAgent.nextPosition - 0.9f * worldDeltaPosition;
-        }
     }
 
     void UpdateNav()
@@ -165,16 +162,16 @@ public class AIModule : MonoBehaviour
 
         if (Time.deltaTime > 1e-5f)
         {
-            m_Velocity = m_SmooothDeltaPosition / Time.deltaTime;
+            m_Velocity = m_SmooothDeltaPosition / Time.deltaTime/0.15f;
         }
 
         bool shouldMove = m_Velocity.magnitude > 0.5f && m_NavMeshAgent.remainingDistance > m_NavMeshAgent.radius;
 
         if (m_Animator)
         {
-            m_Animator.SetBool("Bool", shouldMove);
+            m_Animator.SetBool("move", shouldMove);
             m_Animator.SetFloat("velx", m_Velocity.x);
-            m_Animator.SetFloat("vely", m_Velocity.y);
+            m_Animator.SetFloat("vely", m_Velocity.y / 7);   // hack:  divide by 7 to get "1" for walk
         }
 
         if (m_UseLocomation)
@@ -186,6 +183,14 @@ public class AIModule : MonoBehaviour
         {
             UpdateCompression();
         }
+        
+        if (m_UseLocomation)
+        {
+            //if (worldDeltaPosition.magnitude > m_NavMeshAgent.radius)
+            //transform.position = m_NavMeshAgent.nextPosition - 0.9f * worldDeltaPosition;
+            transform.position = m_NavMeshAgent.nextPosition;
+        }
+        
     }
 
     void UpdateCompression()
@@ -202,6 +207,7 @@ public class AIModule : MonoBehaviour
         m_Compression = Mathf.Clamp(m_Compression, 0, 100);
     }
 
+    /*
     void OnAnimatorMove()
     {
         if (m_Animator)
@@ -212,6 +218,7 @@ public class AIModule : MonoBehaviour
             transform.position = position;
         }
     }
+    */
 
     void ChasePlayer()
     {

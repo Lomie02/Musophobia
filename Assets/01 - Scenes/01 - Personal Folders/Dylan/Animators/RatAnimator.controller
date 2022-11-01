@@ -6,8 +6,16 @@ BlendTree:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Run_Back_45L
-  m_Childs: []
+  m_Name: Walk_45L
+  m_Childs:
+  - serializedVersion: 2
+    m_Motion: {fileID: -42419582059833914, guid: 7022bbbb1f5a91d48b2f31f0f3286d0d, type: 3}
+    m_Threshold: 0
+    m_Position: {x: 0, y: 0}
+    m_TimeScale: 1
+    m_CycleOffset: 0
+    m_DirectBlendParameter: velx
+    m_Mirror: 0
   m_BlendParameter: velx
   m_BlendParameterY: vely
   m_MinThreshold: 0
@@ -101,7 +109,7 @@ BlendTree:
   - serializedVersion: 2
     m_Motion: {fileID: 5400174013796892534}
     m_Threshold: 1
-    m_Position: {x: 1.6944, y: -2.05253}
+    m_Position: {x: 1.64944, y: -2.05253}
     m_TimeScale: 1
     m_CycleOffset: 0
     m_DirectBlendParameter: velx
@@ -171,20 +179,20 @@ AnimatorController:
     m_Type: 4
     m_DefaultFloat: 0
     m_DefaultInt: 0
-    m_DefaultBool: 1
-    m_Controller: {fileID: 0}
+    m_DefaultBool: 0
+    m_Controller: {fileID: 9100000}
   - m_Name: velx
     m_Type: 1
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 0}
+    m_Controller: {fileID: 9100000}
   - m_Name: vely
     m_Type: 1
     m_DefaultFloat: 2
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 0}
+    m_Controller: {fileID: 9100000}
   m_AnimatorLayers:
   - serializedVersion: 5
     m_Name: Base Layer
@@ -204,8 +212,16 @@ BlendTree:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Run_90R
-  m_Childs: []
+  m_Name: Walk_Right_90
+  m_Childs:
+  - serializedVersion: 2
+    m_Motion: {fileID: -42419582059833914, guid: 7022bbbb1f5a91d48b2f31f0f3286d0d, type: 3}
+    m_Threshold: 0
+    m_Position: {x: 0, y: 0}
+    m_TimeScale: 1
+    m_CycleOffset: 0
+    m_DirectBlendParameter: velx
+    m_Mirror: 0
   m_BlendParameter: velx
   m_BlendParameterY: vely
   m_MinThreshold: 0
@@ -249,7 +265,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 0}
+  m_Motion: {fileID: -42419582059833914, guid: 7022bbbb1f5a91d48b2f31f0f3286d0d, type: 3}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -326,8 +342,16 @@ BlendTree:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Run_90L
-  m_Childs: []
+  m_Name: Walk_Left_90
+  m_Childs:
+  - serializedVersion: 2
+    m_Motion: {fileID: -42419582059833914, guid: 7022bbbb1f5a91d48b2f31f0f3286d0d, type: 3}
+    m_Threshold: 0
+    m_Position: {x: 0, y: 0}
+    m_TimeScale: 1
+    m_CycleOffset: 0
+    m_DirectBlendParameter: velx
+    m_Mirror: 0
   m_BlendParameter: velx
   m_BlendParameterY: vely
   m_MinThreshold: 0
@@ -356,10 +380,10 @@ BlendTree:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Run_Spot
+  m_Name: Walk_On_Spot
   m_Childs:
   - serializedVersion: 2
-    m_Motion: {fileID: -1020527023065655362, guid: 90170eabf02a0244d9a202588549a808, type: 3}
+    m_Motion: {fileID: -42419582059833914, guid: 7022bbbb1f5a91d48b2f31f0f3286d0d, type: 3}
     m_Threshold: 0
     m_Position: {x: 0, y: 0}
     m_TimeScale: 1
@@ -379,8 +403,16 @@ BlendTree:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Run_Back_45R
-  m_Childs: []
+  m_Name: Walk_45R
+  m_Childs:
+  - serializedVersion: 2
+    m_Motion: {fileID: -42419582059833914, guid: 7022bbbb1f5a91d48b2f31f0f3286d0d, type: 3}
+    m_Threshold: 0
+    m_Position: {x: 0, y: 0}
+    m_TimeScale: 1
+    m_CycleOffset: 0
+    m_DirectBlendParameter: velx
+    m_Mirror: 0
   m_BlendParameter: velx
   m_BlendParameterY: vely
   m_MinThreshold: 0
@@ -394,10 +426,10 @@ BlendTree:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Run_0
+  m_Name: Walk_Cycle_Forward
   m_Childs:
   - serializedVersion: 2
-    m_Motion: {fileID: 6170182003748328335, guid: 26ae770b874c8d7428cfdd08ef52223f, type: 3}
+    m_Motion: {fileID: 6170182003748328335, guid: 0251fac7107b5ce479bb08a4f7478499, type: 3}
     m_Threshold: 0
     m_Position: {x: 0, y: 0}
     m_TimeScale: 1
@@ -417,8 +449,16 @@ BlendTree:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Run_Back_180
-  m_Childs: []
+  m_Name: Walk_Backwards_180
+  m_Childs:
+  - serializedVersion: 2
+    m_Motion: {fileID: -42419582059833914, guid: 7022bbbb1f5a91d48b2f31f0f3286d0d, type: 3}
+    m_Threshold: 0
+    m_Position: {x: 0, y: 0}
+    m_TimeScale: 1
+    m_CycleOffset: 0
+    m_DirectBlendParameter: velx
+    m_Mirror: 0
   m_BlendParameter: velx
   m_BlendParameterY: vely
   m_MinThreshold: 0
