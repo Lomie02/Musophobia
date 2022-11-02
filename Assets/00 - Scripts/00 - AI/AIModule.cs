@@ -79,7 +79,7 @@ public class AIModule : MonoBehaviour
     float m_Compression = 0;
 
     [Header("Door Transitions")]
-    [SerializeField, Range(0f,0.5f)] float m_CompressionRate = 0.2f;
+    [SerializeField] float m_CompressionRate = 5;
 
 
     void Start()
@@ -190,15 +190,14 @@ public class AIModule : MonoBehaviour
     {
         if (m_IsCompressing)
         {
-            m_Compression += m_CompressionRate * Time.deltaTime;
+            m_Compression = 1;
         }
         else
         {
-            m_Compression -= m_CompressionRate * Time.deltaTime;
+            m_Compression = 0;
         }
 
-        m_Compression = Mathf.Clamp(m_Compression, 0, 1);
-        m_Animator.SetLayerWeight(1, m_Compression);
+        m_Animator.SetLayerWeight(m_Animator.GetLayerIndex("crouch"), m_Compression);
     }
 
     void ChasePlayer()
