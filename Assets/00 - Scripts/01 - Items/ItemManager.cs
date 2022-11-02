@@ -1,12 +1,20 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.Events;
+
+[System.Serializable]
+public struct ItemIcons
+{
+    public string m_Name;
+    public Sprite m_Sprite;
+}
 
 public class ItemManager : MonoBehaviour
 {
     [Header("General")]
-    [SerializeField] int m_ItemSlots = 3;
+    [SerializeField] int m_ItemSlots = 5;
     [Space]
 
     bool m_UsingRotate = false;
@@ -43,6 +51,12 @@ public class ItemManager : MonoBehaviour
 
     //============================ Objective Vars
 
+    [Header("Inventory UI")]
+    [SerializeField] Image[] m_Selections;
+    [SerializeField] Image[] m_SlotsUi;
+    [SerializeField] ItemIcons[] m_Items;
+
+    int m_PreviousSlot = 0;
     void Start()
     {
         m_PhysicalObject = new GameObject[m_ItemSlots];
@@ -69,6 +83,33 @@ public class ItemManager : MonoBehaviour
         return m_UsingRotate;
     }
 
+    void UpdateUi()
+    {
+        m_Selections[m_PreviousSlot].color = Color.black;
+        m_Selections[m_CurrentSlot].color = Color.white;
+
+        for (int i = 0; i < m_PhysicalObject.Length; i++)
+        {
+            if (m_PhysicalObject[i] != null)
+            {
+                for (int j = 0; j < m_Items.Length; j++)
+                {
+                    if (m_Items[j].m_Name == m_ItemIdentifier.GetName())
+                    {
+                        m_SlotsUi[m_CurrentSlot].sprite = m_Items[j].m_Sprite;
+                        continue;
+                    }
+                }
+            }
+            else
+            {
+                m_SlotsUi[i].sprite = null;
+            }
+
+        }
+    }
+
+
     void Update()
     {
         if (Input.mouseScrollDelta.y != m_LastWheelValue)
@@ -77,6 +118,26 @@ public class ItemManager : MonoBehaviour
             m_LastWheelValue = Input.mouseScrollDelta.y;
         }
 
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            JumpToSlot(0);
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            JumpToSlot(1);
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha3))
+        {
+            JumpToSlot(2);
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha4))
+        {
+            JumpToSlot(3);
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha5))
+        {
+            JumpToSlot(4);
+        }
 
         if (m_PhysicalObject[m_CurrentSlot] && m_UsingRotate)
         {
@@ -163,6 +224,7 @@ public class ItemManager : MonoBehaviour
             m_Key = m_PhysicalObject[m_CurrentSlot].gameObject.GetComponent<KeyIdentifier>();
         }
 
+        UpdateUi();
         m_OnUpdatedSlot.Invoke();
     }
 
@@ -185,6 +247,7 @@ public class ItemManager : MonoBehaviour
             m_PhysicalObject[m_CurrentSlot].gameObject.SetActive(false);
         }
 
+        m_PreviousSlot = m_CurrentSlot;
         m_CurrentSlot++;
 
         if (m_CurrentSlot >= m_PhysicalObject.Length)
@@ -205,6 +268,39 @@ public class ItemManager : MonoBehaviour
         {
             m_ItemIdentifier = null;
         }
+        UpdateUi();
+        m_OnUpdatedSlot.Invoke();
+    }
+
+    public void JumpToSlot(int _slot)
+    {
+        if (m_PhysicalObject[m_CurrentSlot] != null)
+        {
+            m_PhysicalObject[m_CurrentSlot].gameObject.SetActive(false);
+        }
+
+        m_PreviousSlot = m_CurrentSlot;
+        m_CurrentSlot = _slot;
+
+        if (m_CurrentSlot >= m_PhysicalObject.Length)
+        {
+            m_CurrentSlot = 0;
+        }
+
+        if (m_PhysicalObject[m_CurrentSlot] != null)
+        {
+            if (m_PhysicalObject[m_CurrentSlot].GetComponent<ItemIdentifier>() != null)
+            {
+                m_ItemIdentifier = m_PhysicalObject[m_CurrentSlot].GetComponent<ItemIdentifier>();
+            }
+
+            m_PhysicalObject[m_CurrentSlot].gameObject.SetActive(true);
+        }
+        else
+        {
+            m_ItemIdentifier = null;
+        }
+        UpdateUi();
         m_OnUpdatedSlot.Invoke();
     }
 
@@ -271,6 +367,8 @@ public class ItemManager : MonoBehaviour
 
         m_Rig[m_CurrentSlot] = null;
         m_PhysicalObject[m_CurrentSlot] = null;
+
+        UpdateUi();
     }
 
     public void DeleteItem()
@@ -280,6 +378,8 @@ public class ItemManager : MonoBehaviour
 
         Destroy(m_PhysicalObject[m_CurrentSlot]);
         m_PhysicalObject[m_CurrentSlot] = null;
+
+        UpdateUi();
     }
 
     public void ClearVectors()

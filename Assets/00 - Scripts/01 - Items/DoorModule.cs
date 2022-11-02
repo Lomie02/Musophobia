@@ -124,6 +124,7 @@ public class DoorModule : MonoBehaviour
             gameObject.GetComponent<Rigidbody>().useGravity = true;
             gameObject.GetComponent<Rigidbody>().isKinematic = false;
             GetComponent<HingeJoint>().useLimits = false;
+            SetLockState(false);
         }
 
         m_PlayerView = GameObject.FindGameObjectWithTag("MainCamera");
