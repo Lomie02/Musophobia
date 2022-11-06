@@ -26,7 +26,7 @@ public class AIModule : MonoBehaviour
 
     [Header("Locomotion")]
     [SerializeField] bool m_UseLocomation = false;
-    [SerializeField] Vector3 worldDeltaPosition;
+    Vector2 worldDeltaPosition = Vector2.zero;
 
     [Space]
 
@@ -43,7 +43,7 @@ public class AIModule : MonoBehaviour
     [SerializeField, Tooltip("NOTE: Changing this will affect the AI path finding!"), Space()] LayerMask m_SearchLayer;
 
     [Header("Movement")]
-    [SerializeField, Range(3, 50), Tooltip("The speed the AI will roam at.")] float m_RoamSpeed = 1f;
+    [SerializeField, Range(0, 50), Tooltip("The speed the AI will roam at.")] float m_RoamSpeed = 1f;
     [SerializeField, Range(0.5f, 100), Tooltip("The speed the AI will chase the Player at.")] float m_ChaseSpeed = 5f;
 
     //=========================================== AI chase
@@ -77,9 +77,10 @@ public class AIModule : MonoBehaviour
     //========================================= Compression Rate
     bool m_IsCompressing = false;
     float m_Compression = 0;
-    float m_CompressionRate = 5;
 
-    SkinnedMeshRenderer m_SkinnedMeshRenderer;
+    [Header("Door Transitions")]
+    [SerializeField] float m_CompressionRate = 5;
+
 
     void Start()
     {
@@ -96,10 +97,7 @@ public class AIModule : MonoBehaviour
             }
         }
 
-        if (GetComponentInChildren<SkinnedMeshRenderer>() != null)
-        {
-            m_SkinnedMeshRenderer = GetComponent<SkinnedMeshRenderer>();
-        }
+        m_NavMeshAgent = GetComponent<NavMeshAgent>();
 
         if (m_UseLocomation)
         {
@@ -107,7 +105,6 @@ public class AIModule : MonoBehaviour
         }
         m_Input = FindObjectOfType<InputManager>();
 
-        m_NavMeshAgent = GetComponent<NavMeshAgent>();
         m_WonderTimer = m_WonderTime;
         m_AiStates = EnemyStates.ROAM;
 
@@ -138,17 +135,14 @@ public class AIModule : MonoBehaviour
                 break;
         }
 
+        UpdateCompression();
+
         if (m_UseLocomation)
         {
             UpdateNav();
         }
         DistanceCheck();
 
-        if (m_UseLocomation)
-        {
-            if (worldDeltaPosition.magnitude > m_NavMeshAgent.radius)
-                transform.position = m_NavMeshAgent.nextPosition - 0.9f * worldDeltaPosition;
-        }
     }
 
     void UpdateNav()
@@ -165,16 +159,16 @@ public class AIModule : MonoBehaviour
 
         if (Time.deltaTime > 1e-5f)
         {
-            m_Velocity = m_SmooothDeltaPosition / Time.deltaTime;
+            m_Velocity = m_SmooothDeltaPosition / Time.deltaTime / 0.15f;
         }
 
         bool shouldMove = m_Velocity.magnitude > 0.5f && m_NavMeshAgent.remainingDistance > m_NavMeshAgent.radius;
 
         if (m_Animator)
         {
-            m_Animator.SetBool("Bool", shouldMove);
+            m_Animator.SetBool("move", shouldMove);
             m_Animator.SetFloat("velx", m_Velocity.x);
-            m_Animator.SetFloat("vely", m_Velocity.y);
+            m_Animator.SetFloat("vely", m_Velocity.y / 7);   // hack:  divide by 7 to get "1" for walk
         }
 
         if (m_UseLocomation)
@@ -182,35 +176,28 @@ public class AIModule : MonoBehaviour
             GetComponent<LookAt>().m_LookAtPosition = m_NavMeshAgent.steeringTarget + transform.forward;
         }
 
-        if (m_SkinnedMeshRenderer)
+
+        if (m_UseLocomation)
         {
-            UpdateCompression();
+            //if (worldDeltaPosition.magnitude > m_NavMeshAgent.radius)
+            //transform.position = m_NavMeshAgent.nextPosition - 0.9f * worldDeltaPosition;
+            transform.position = m_NavMeshAgent.nextPosition;
         }
+
     }
 
     void UpdateCompression()
     {
         if (m_IsCompressing)
         {
-            m_Compression += 1 * m_CompressionRate * Time.deltaTime;
+            m_Compression = 1;
         }
         else
         {
-            m_Compression -= 1 * m_CompressionRate * Time.deltaTime;
+            m_Compression = 0;
         }
 
-        m_Compression = Mathf.Clamp(m_Compression, 0, 100);
-    }
-
-    void OnAnimatorMove()
-    {
-        if (m_Animator)
-        {
-            // Update position based on animation movement using navigation surface height
-            Vector3 position = m_Animator.rootPosition;
-            position.y = m_NavMeshAgent.nextPosition.y;
-            transform.position = position;
-        }
+        m_Animator.SetLayerWeight(m_Animator.GetLayerIndex("crouch"), m_Compression);
     }
 
     void ChasePlayer()
@@ -221,8 +208,6 @@ public class AIModule : MonoBehaviour
     void DistanceCheck()
     {
         float Distance = Vector3.Distance(transform.position, m_Player.transform.position);
-
-
 
         Vector3 Direction = m_Player.transform.position - transform.position;
 

@@ -3,10 +3,18 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
+
+enum DoorMode
+{
+    Collision = 0,
+    Swing,
+}
+
 [RequireComponent(typeof(Rigidbody))]
 public class DoorModule : MonoBehaviour
 {
     [Header("General")]
+    [SerializeField] DoorMode m_Mode = DoorMode.Collision;
 
     [SerializeField] int m_DoorId;
     [SerializeField] bool m_LockedStart = true;
@@ -27,7 +35,7 @@ public class DoorModule : MonoBehaviour
     private float m_MaxDistanceGrab = 4f;
 
     private GameObject m_TargetObject;
-     float m_ThrowStrength = 50f;
+    float m_ThrowStrength = 50f;
     private bool mIsHolding;
     private bool m_PickingUp;
 
@@ -60,7 +68,7 @@ public class DoorModule : MonoBehaviour
         }
         else
         {
-                
+
             if (m_OnIncorrectKey != null)
             {
                 m_OnIncorrectKey.Invoke();
@@ -105,8 +113,19 @@ public class DoorModule : MonoBehaviour
             m_DoorMovingSound.loop = true;
         }
 
-        gameObject.GetComponent<Rigidbody>().useGravity = false;
-        gameObject.GetComponent<Rigidbody>().isKinematic = true;
+        if (m_Mode == DoorMode.Collision)
+        {
+            gameObject.GetComponent<Rigidbody>().useGravity = false;
+            gameObject.GetComponent<Rigidbody>().isKinematic = true;
+            GetComponent<HingeJoint>().useLimits = true;
+        }
+        else
+        {
+            gameObject.GetComponent<Rigidbody>().useGravity = true;
+            gameObject.GetComponent<Rigidbody>().isKinematic = false;
+            GetComponent<HingeJoint>().useLimits = false;
+            SetLockState(false);
+        }
 
         m_PlayerView = GameObject.FindGameObjectWithTag("MainCamera");
     }
@@ -162,6 +181,7 @@ public class DoorModule : MonoBehaviour
             if (hit.collider.GetComponent<DoorModule>() && m_PickingUp && hit.collider.GetComponent<DoorModule>().m_IsLocked == false)
             {
                 mIsHolding = true;
+
                 m_TargetObject.GetComponent<Rigidbody>().isKinematic = false;
                 m_TargetObject.GetComponent<Rigidbody>().useGravity = true;
                 m_TargetObject.GetComponent<Rigidbody>().freezeRotation = false;
@@ -197,8 +217,17 @@ public class DoorModule : MonoBehaviour
     {
         mIsHolding = false;
         m_PickingUp = false;
-        m_TargetObject.GetComponent<Rigidbody>().useGravity = false;
-        m_TargetObject.GetComponent<Rigidbody>().isKinematic = true;
+
+        if (m_Mode == DoorMode.Collision)
+        {
+            m_TargetObject.GetComponent<Rigidbody>().useGravity = false;
+            m_TargetObject.GetComponent<Rigidbody>().isKinematic = true;
+        }
+        else if (m_Mode == DoorMode.Swing)
+        {
+            m_TargetObject.GetComponent<Rigidbody>().useGravity = true;
+            m_TargetObject.GetComponent<Rigidbody>().isKinematic = false;
+        }
         m_TargetObject.GetComponent<Rigidbody>().freezeRotation = false;
         m_TargetObject = null;
     }

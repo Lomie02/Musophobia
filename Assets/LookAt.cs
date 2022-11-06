@@ -1,7 +1,6 @@
 using UnityEngine;
 using System.Collections;
 
-[RequireComponent(typeof(Animator))]
 public class LookAt : MonoBehaviour
 {
     [SerializeField] Transform m_Head = null;
@@ -11,7 +10,7 @@ public class LookAt : MonoBehaviour
     [SerializeField] bool m_Looking = true;
 
     Vector3 lookAtPosition;
-    Animator animator;
+    [SerializeField] Animator animator;
     float lookAtWeight = 0.0f;
 
     void Start()
@@ -21,7 +20,6 @@ public class LookAt : MonoBehaviour
             enabled = false;
             return;
         }
-        animator = GetComponent<Animator>();
         m_LookAtPosition = m_Head.position + transform.forward;
         lookAtPosition = m_LookAtPosition;
     }
