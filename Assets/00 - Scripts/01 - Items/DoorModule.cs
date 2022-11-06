@@ -129,11 +129,23 @@ public class DoorModule : MonoBehaviour
 
         if (m_Config == ConfigMode.Auto)
         {
-            m_Mode = DoorMode.Collision;
-            gameObject.GetComponent<Rigidbody>().useGravity = false;
-            gameObject.GetComponent<Rigidbody>().isKinematic = true;
-            GetComponent<HingeJoint>().useLimits = true;
-            GetComponent<NavMeshObstacle>().carving = true;
+            if (m_LockedStart)
+            {
+                m_Mode = DoorMode.Collision;
+                gameObject.GetComponent<Rigidbody>().useGravity = false;
+                gameObject.GetComponent<Rigidbody>().isKinematic = true;
+                GetComponent<HingeJoint>().useLimits = true;
+                GetComponent<NavMeshObstacle>().carving = true;
+            }
+            else
+            {
+                m_Mode = DoorMode.Swing;
+                gameObject.GetComponent<Rigidbody>().useGravity = true;
+                gameObject.GetComponent<Rigidbody>().isKinematic = false;
+                GetComponent<HingeJoint>().useLimits = true;
+                GetComponent<NavMeshObstacle>().carving = false;
+                GetComponent<NavMeshObstacle>().enabled = false;
+            }
         }
 
         GetComponent<NavMeshObstacle>().center = GetComponent<BoxCollider>().center;
