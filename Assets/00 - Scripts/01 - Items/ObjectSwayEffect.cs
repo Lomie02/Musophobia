@@ -3,8 +3,8 @@ using System.Collections;
 
 public class ObjectSwayEffect : MonoBehaviour
 {
-    float amount = 1f;
-    float maxamount = 2f;
+    float amount = 10f;
+    float maxamount = 10f;
     float smooth = 3;
     private Quaternion def;
     private bool Paused = false;
