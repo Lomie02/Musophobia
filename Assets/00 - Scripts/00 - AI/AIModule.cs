@@ -14,6 +14,7 @@ public class AIModule : MonoBehaviour
     {
         ROAM = 0,
         CHASE,
+        IDLE,
     }
 
     enum PlayerSearch
@@ -81,6 +82,8 @@ public class AIModule : MonoBehaviour
     [Header("Door Transitions")]
     [SerializeField] float m_CompressionRate = 5;
 
+    float m_TimerIdle = 0;
+    float m_IdleDuration = 5;
 
     void Start()
     {
@@ -97,6 +100,7 @@ public class AIModule : MonoBehaviour
             }
         }
 
+        m_TimerIdle = m_IdleDuration;
         m_NavMeshAgent = GetComponent<NavMeshAgent>();
 
         if (m_UseLocomation)
@@ -133,6 +137,10 @@ public class AIModule : MonoBehaviour
             case EnemyStates.CHASE:
                 ChasePlayer();
                 break;
+
+            case EnemyStates.IDLE:
+                UpdateIdle();
+                break;
         }
 
         UpdateCompression();
@@ -145,6 +153,15 @@ public class AIModule : MonoBehaviour
 
     }
 
+    void UpdateIdle()
+    {
+        m_TimerIdle -= Time.deltaTime;
+        if (m_TimerIdle < 0)
+        {
+            m_TimerIdle = m_IdleDuration;
+            m_AiStates = EnemyStates.ROAM;
+        }
+    }
     void UpdateNav()
     {
         Vector3 worldDeltaPosition = m_NavMeshAgent.nextPosition - transform.position;
@@ -261,8 +278,16 @@ public class AIModule : MonoBehaviour
     {
         if (m_NavMeshAgent.remainingDistance <= m_NavMeshAgent.stoppingDistance)
         {
-            Vector3 NewPositon = RandomPosition(transform.position, m_SearchDistance, m_SearchLayer);
-            m_NavMeshAgent.SetDestination(NewPositon);
+            int rand = Random.Range(0, 4);
+            if (rand == 2)
+            {
+                m_AiStates = EnemyStates.IDLE;
+            }
+            else
+            {
+                Vector3 NewPositon = RandomPosition(transform.position, m_SearchDistance, m_SearchLayer);
+                m_NavMeshAgent.SetDestination(NewPositon);
+            }
         }
     }
 
