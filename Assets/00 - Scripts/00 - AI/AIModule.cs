@@ -232,8 +232,8 @@ public class AIModule : MonoBehaviour
         {
             m_IsChasing = true;
             SetAiSpeed(m_ChaseSpeed);
-
             m_ExitRoam.Invoke();
+
             m_EnterChase.Invoke();
             m_AiStates = EnemyStates.CHASE;
         }
