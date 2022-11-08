@@ -57,9 +57,35 @@ public class AudioManager : MonoBehaviour
     [Header("General")]
     [SerializeField] SoundList[] m_Sounds;
 
+    GameObject[] m_MusicClips;
+    GameObject[] m_AudioClips;
+
+    DataSystem m_DataSystem;
+
     private void Start()
     {
         BeginSetUp();
+
+        m_DataSystem = GetComponent<DataSystem>();
+
+        m_MusicClips = GameObject.FindGameObjectsWithTag("Music");
+        m_MusicClips = GameObject.FindGameObjectsWithTag("Audio");
+
+        if (m_MusicClips.Length > 1)
+        {
+            for (int i = 0; i < m_MusicClips.Length; i++)
+            {
+                m_MusicClips[i].GetComponent<AudioSource>().volume = m_DataSystem.GetMusicLevel();
+            }
+        }
+
+        if (m_AudioClips.Length > 1)
+        {
+            for (int i = 0; i < m_AudioClips.Length; i++)
+            {
+                m_AudioClips[i].GetComponent<AudioSource>().volume = m_DataSystem.GetAudioLevel();
+            }
+        }
     }
 
     void BeginSetUp()
