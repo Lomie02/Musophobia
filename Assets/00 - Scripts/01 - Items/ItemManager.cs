@@ -56,7 +56,14 @@ public class ItemManager : MonoBehaviour
     [SerializeField] Image[] m_SlotsUi;
     [SerializeField] ItemIcons[] m_Items;
 
+    [Space]
+    [SerializeField] Color m_DefaultSelectionColor;
+    [SerializeField] Color m_SelectionColor;
     int m_PreviousSlot = 0;
+    [Space]
+    [SerializeField] KeyCode m_InvBind = KeyCode.I;
+    [SerializeField] GameObject m_InventoryImage;
+    
     void Start()
     {
         m_PhysicalObject = new GameObject[m_ItemSlots];
@@ -64,6 +71,11 @@ public class ItemManager : MonoBehaviour
 
         m_LastWheelValue = Input.mouseScrollDelta.y;
         m_ItemBox.localPosition = m_DefaultPosition;
+
+        for (int i = 0; i < m_SlotsUi.Length; i++)
+        {
+            m_SlotsUi[i].gameObject.GetComponent<Image>().enabled = false;
+        }
     }
 
     public bool IsKeySlot()
@@ -85,8 +97,9 @@ public class ItemManager : MonoBehaviour
 
     void UpdateUi()
     {
-        m_Selections[m_PreviousSlot].color = Color.black;
-        m_Selections[m_CurrentSlot].color = Color.white;
+        m_Selections[m_PreviousSlot].color = m_DefaultSelectionColor;
+        m_Selections[m_CurrentSlot].color = m_SelectionColor;
+
 
         for (int i = 0; i < m_PhysicalObject.Length; i++)
         {
@@ -97,6 +110,7 @@ public class ItemManager : MonoBehaviour
                     if (m_Items[j].m_Name == m_ItemIdentifier.GetName())
                     {
                         m_SlotsUi[m_CurrentSlot].sprite = m_Items[j].m_Sprite;
+                        m_SlotsUi[m_CurrentSlot].gameObject.GetComponent<Image>().enabled = true;
                         continue;
                     }
                 }
@@ -104,6 +118,7 @@ public class ItemManager : MonoBehaviour
             else
             {
                 m_SlotsUi[i].sprite = null;
+                m_SlotsUi[i].gameObject.GetComponent<Image>().enabled = false;
             }
 
         }
@@ -137,6 +152,18 @@ public class ItemManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Alpha5))
         {
             JumpToSlot(4);
+        }
+
+        if (Input.GetKeyDown(m_InvBind) && m_InventoryImage != null)
+        {
+            if (m_InventoryImage.activeSelf == true)
+            {
+                m_InventoryImage.SetActive(false);
+            }
+            else
+            {
+                m_InventoryImage.SetActive(true);
+            }
         }
 
         if (m_PhysicalObject[m_CurrentSlot] && m_UsingRotate)
