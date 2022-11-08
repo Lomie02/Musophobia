@@ -1,9 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.Events;
 
-
+enum ConfigMode
+{
+    Auto = 0,
+    Manually
+}
 enum DoorMode
 {
     Collision = 0,
@@ -11,9 +16,11 @@ enum DoorMode
 }
 
 [RequireComponent(typeof(Rigidbody))]
+[RequireComponent(typeof(NavMeshObstacle))]
 public class DoorModule : MonoBehaviour
 {
     [Header("General")]
+    [SerializeField] ConfigMode m_Config = ConfigMode.Auto;
     [SerializeField] DoorMode m_Mode = DoorMode.Collision;
 
     [SerializeField] int m_DoorId;
@@ -62,6 +69,13 @@ public class DoorModule : MonoBehaviour
             if (m_OnDoorUnlocked != null)
             {
                 m_OnDoorUnlocked.Invoke();
+            }
+
+            if (m_Config == ConfigMode.Auto)
+            {
+                m_Mode = DoorMode.Swing;
+                GetComponent<NavMeshObstacle>().carving = false;
+                GetComponent<NavMeshObstacle>().enabled = false;
             }
 
             return true;
@@ -113,18 +127,48 @@ public class DoorModule : MonoBehaviour
             m_DoorMovingSound.loop = true;
         }
 
-        if (m_Mode == DoorMode.Collision)
+        if (m_Config == ConfigMode.Auto)
+        {
+            if (m_LockedStart)
+            {
+                m_Mode = DoorMode.Collision;
+                gameObject.GetComponent<Rigidbody>().useGravity = false;
+                gameObject.GetComponent<Rigidbody>().isKinematic = true;
+                GetComponent<HingeJoint>().useLimits = true;
+                GetComponent<NavMeshObstacle>().carving = true;
+            }
+            else
+            {
+                m_Mode = DoorMode.Swing;
+                gameObject.GetComponent<Rigidbody>().useGravity = true;
+                gameObject.GetComponent<Rigidbody>().isKinematic = false;
+                GetComponent<HingeJoint>().useLimits = true;
+                GetComponent<NavMeshObstacle>().carving = false;
+                GetComponent<NavMeshObstacle>().enabled = false;
+            }
+        }
+
+        GetComponent<NavMeshObstacle>().center = GetComponent<BoxCollider>().center;
+        GetComponent<NavMeshObstacle>().size = GetComponent<BoxCollider>().size;
+
+
+
+        if (m_Mode == DoorMode.Collision && m_Config == ConfigMode.Manually)
         {
             gameObject.GetComponent<Rigidbody>().useGravity = false;
             gameObject.GetComponent<Rigidbody>().isKinematic = true;
             GetComponent<HingeJoint>().useLimits = true;
+            GetComponent<NavMeshObstacle>().carving = true;
+            GetComponent<NavMeshObstacle>().enabled = true;
         }
-        else
+        else if(m_Mode == DoorMode.Swing && m_Config == ConfigMode.Manually)
         {
             gameObject.GetComponent<Rigidbody>().useGravity = true;
             gameObject.GetComponent<Rigidbody>().isKinematic = false;
             GetComponent<HingeJoint>().useLimits = false;
             SetLockState(false);
+            GetComponent<NavMeshObstacle>().carving = false;
+            GetComponent<NavMeshObstacle>().enabled = false;
         }
 
         m_PlayerView = GameObject.FindGameObjectWithTag("MainCamera");
