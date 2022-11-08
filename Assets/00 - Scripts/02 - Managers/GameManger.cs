@@ -1,8 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
+
 
 public class GameManger : MonoBehaviour
 {
@@ -11,7 +13,7 @@ public class GameManger : MonoBehaviour
         ENABLED = 0,
         DISABLED,
     }
-
+    
     //======================================================
 
     [SerializeField, Tooltip("Enable only in main game.")] bool m_UseSaving = true;
@@ -34,7 +36,11 @@ public class GameManger : MonoBehaviour
     [SerializeField] KeyCode m_Pause = KeyCode.P;
 
     //======================================================
+    [SerializeField] Slider m_MusicSlider = null;
+    [SerializeField] Slider m_AudioSlider = null;
 
+        
+    //======================================================
     PauseManager m_PauseManager = null;
     DataSystem m_DataSystem = null;
 
@@ -94,6 +100,16 @@ public class GameManger : MonoBehaviour
                 m_PauseManager.CyclePause();
             }
         }
+    }
+
+    public void ChangeAudioMusic()
+    {
+        m_DataSystem.SetMusicLevel(m_MusicSlider.value);
+    }
+
+    public void ChangeAudioRegular()
+    {
+        m_DataSystem.SetAudioLevel(m_AudioSlider.value);
     }
 
     public void ChangeScene(string _name)
