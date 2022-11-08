@@ -37,7 +37,7 @@ public class DataSystem : MonoBehaviour
         }
         else
         {
-            return 0f;
+            return 40f;
         }
     }
 
@@ -50,5 +50,41 @@ public class DataSystem : MonoBehaviour
     public float GetFieldOfView()
     {
         return PlayerPrefs.GetFloat("player_fov");
+    }
+
+    public void SetMusicLevel(float _amount)
+    {
+        PlayerPrefs.SetFloat("music_audio", _amount);
+    }
+
+    public float GetMusicLevel()
+    {
+        if (PlayerPrefs.HasKey("music_audio"))
+        {
+            return PlayerPrefs.GetFloat("music_audio");
+        }
+        else
+        {
+            return 40f;
+        }
+    }
+
+    //====================================
+
+    public void SetResolution(int _index)
+    {
+        PlayerPrefs.SetInt("resolution", _index);
+    }
+
+    public int GetResolution()
+    {
+        if (PlayerPrefs.HasKey("resolution"))
+        {
+            return PlayerPrefs.GetInt("resolution");
+        }
+        else
+        {
+            return 1;
+        }
     }
 }
