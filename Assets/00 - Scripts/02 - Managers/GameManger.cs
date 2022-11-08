@@ -5,7 +5,6 @@ using UnityEngine.UI;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 
-
 public class GameManger : MonoBehaviour
 {
     enum AutoFixMouse
@@ -13,7 +12,15 @@ public class GameManger : MonoBehaviour
         ENABLED = 0,
         DISABLED,
     }
-    
+
+    enum Resolution
+    {
+        Res1 = 0,   // 1280 x 720
+        Res2,       // 1920 x 1080
+        Res3,       // 2560 x 1440
+        Res4,       // 3840 x 2160
+    }
+
     //======================================================
 
     [SerializeField, Tooltip("Enable only in main game.")] bool m_UseSaving = true;
@@ -39,17 +46,34 @@ public class GameManger : MonoBehaviour
     [SerializeField] Slider m_MusicSlider = null;
     [SerializeField] Slider m_AudioSlider = null;
 
-        
+
     //======================================================
     PauseManager m_PauseManager = null;
     DataSystem m_DataSystem = null;
 
     PlayerCamera m_PlayerCamera = null;
+    Resolution m_Resolution = Resolution.Res2;
+
+    [SerializeField] Dropdown m_Dropdown = null;
+    /*
+        1280 x 720
+        1920 x 1080 - default
+        2560 x 1440
+        3840 x 2160
+     */
+
     private void Start()
     {
         m_PauseManager = GetComponent<PauseManager>();
         m_DataSystem = GetComponent<DataSystem>();
         m_PlayerCamera = FindObjectOfType<PlayerCamera>();
+
+        if (m_DataSystem)
+        {
+            int resolution = m_DataSystem.GetResolution();
+            AdjustResolution(resolution);
+        }
+
 
         if (!m_PlayerCamera)
         {
@@ -66,6 +90,73 @@ public class GameManger : MonoBehaviour
         {
             SetupValues();
         }
+    }
+
+    public void ChangeResolution()
+    {
+        if (m_Dropdown.value == 0)
+        {
+            m_Resolution = Resolution.Res1;
+        }
+        else if (m_Dropdown.value == 1)
+        {
+            m_Resolution = Resolution.Res2;
+        }
+        else if (m_Dropdown.value == 2)
+        {
+            m_Resolution = Resolution.Res3;
+        }
+        else
+        {
+            m_Resolution = Resolution.Res4;
+        }
+        UpdateResolution();
+    }
+
+    void AdjustResolution(int res)
+    {
+        if (res == 0)
+        {
+            m_Resolution = Resolution.Res1;
+        }
+        else if (res == 1)
+        {
+            m_Resolution = Resolution.Res2;
+        }
+        else if (res == 2)
+        {
+            m_Resolution = Resolution.Res3;
+        }
+        else
+        {
+            m_Resolution = Resolution.Res4;
+        }
+        UpdateResolution();
+    }
+
+    void UpdateResolution()
+    {
+        switch (m_Resolution)
+        {
+            case Resolution.Res1:
+
+                Screen.SetResolution(1280, 720, true, 60);
+                break;
+
+            case Resolution.Res2:
+                
+                Screen.SetResolution(1920, 1080, true, 60);
+                break;
+
+            case Resolution.Res3:
+                Screen.SetResolution(2560, 1440, true, 60);
+                break;
+
+            case Resolution.Res4:
+                Screen.SetResolution(3840, 2160, true, 60);
+                break;
+        }
+        m_DataSystem.SetResolution((int)m_Resolution);
     }
 
     public void SetupValues()
@@ -87,7 +178,7 @@ public class GameManger : MonoBehaviour
     {
         if (Input.GetKeyDown(m_ExitGame) && m_UseQuit)
         {
-            if (m_OnQuit != null) 
+            if (m_OnQuit != null)
             {
                 m_OnQuit.Invoke();
             }

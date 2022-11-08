@@ -68,4 +68,23 @@ public class DataSystem : MonoBehaviour
             return 40f;
         }
     }
+
+    //====================================
+
+    public void SetResolution(int _index)
+    {
+        PlayerPrefs.SetInt("resolution", _index);
+    }
+
+    public int GetResolution()
+    {
+        if (PlayerPrefs.HasKey("resolution"))
+        {
+            return PlayerPrefs.GetInt("resolution");
+        }
+        else
+        {
+            return 1;
+        }
+    }
 }
