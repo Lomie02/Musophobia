@@ -16,13 +16,51 @@ public class ItemIdentifier : MonoBehaviour
     [SerializeField] UnityEvent m_OnPickedUp;
     [SerializeField] UnityEvent m_OnDroppedItem;
 
+    [Header("Animation")]
+    [SerializeField] bool m_IsLighter = false;
+    [SerializeField] Animator m_Animator;
+
+    AnimatorClipInfo[] m_Clips;
+    float m_AnimationTimer = 0;
+    bool m_AnimationPlaying = false;
+
     bool m_OnState = false;
 
+
+    private void Start()
+    {
+        if (m_Animator)
+        {
+            m_Clips = m_Animator.GetCurrentAnimatorClipInfo(0);
+        }
+    }
     public void UseItem()
     {
         if (m_OnUse != null && m_OnState)
         {
             m_OnUse.Invoke();
+        }
+
+        if (m_IsLighter && m_Animator)
+        {
+            if (!m_AnimationPlaying)
+            {
+                m_AnimationPlaying = true;
+                m_Animator.SetTrigger("Use");
+            }
+        }
+    }
+
+    private void FixedUpdate()
+    {
+        if (m_AnimationPlaying)
+        {
+            m_AnimationTimer += Time.deltaTime;
+            if (m_AnimationTimer >= 3)
+            {
+                m_AnimationTimer = 0;
+                m_AnimationPlaying = false;
+            }
         }
     }
 
