@@ -84,7 +84,7 @@ public class AIModule : MonoBehaviour
 
     float m_TimerIdle = 0;
     float m_IdleDuration = 5;
-
+    AudioManager m_AudioManager;
     void Start()
     {
         if (m_PlayerSearch == PlayerSearch.TAG)
@@ -114,7 +114,7 @@ public class AIModule : MonoBehaviour
 
         m_Input = FindObjectOfType<InputManager>();
         m_InterestTimer = m_InterestTime;
-
+        m_AudioManager = FindObjectOfType<AudioManager>();
         m_GameManger = FindObjectOfType<GameManger>();
 
         ApplyNavSettings();
@@ -125,7 +125,6 @@ public class AIModule : MonoBehaviour
     {
         m_NavMeshAgent.speed = m_RoamSpeed;
     }
-
     void Update()
     {
         switch (m_AiStates)
@@ -183,7 +182,6 @@ public class AIModule : MonoBehaviour
 
         if (m_Animator)
         {
-            m_Animator.SetBool("move", shouldMove);
             m_Animator.SetFloat("velx", m_Velocity.x);
             m_Animator.SetFloat("vely", m_Velocity.y / 7);   // hack:  divide by 7 to get "1" for walk
         }
@@ -196,8 +194,6 @@ public class AIModule : MonoBehaviour
 
         if (m_UseLocomation)
         {
-            //if (worldDeltaPosition.magnitude > m_NavMeshAgent.radius)
-            //transform.position = m_NavMeshAgent.nextPosition - 0.9f * worldDeltaPosition;
             transform.position = m_NavMeshAgent.nextPosition;
         }
 
