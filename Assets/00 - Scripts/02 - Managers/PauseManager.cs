@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PauseManager : MonoBehaviour
+public class PauseManager : GameManger
 {
     [Header("General")]
     [SerializeField, Tooltip("The panel that will be used as the pause menu.")] Image m_PausePanel = null;

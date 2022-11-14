@@ -74,7 +74,6 @@ public class GameManger : MonoBehaviour
             AdjustResolution(resolution);
         }
 
-
         if (!m_PlayerCamera)
         {
             m_UseSaving = false;
