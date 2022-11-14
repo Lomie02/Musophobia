@@ -63,7 +63,7 @@ public class ItemManager : MonoBehaviour
     [Space]
     [SerializeField] KeyCode m_InvBind = KeyCode.I;
     [SerializeField] GameObject m_InventoryImage;
-    
+
     void Start()
     {
         m_PhysicalObject = new GameObject[m_ItemSlots];
@@ -289,12 +289,18 @@ public class ItemManager : MonoBehaviour
                 m_ItemIdentifier = m_PhysicalObject[m_CurrentSlot].GetComponent<ItemIdentifier>();
             }
 
+            if (m_PhysicalObject[m_CurrentSlot].GetComponent<KeyIdentifier>() != null)
+            {
+                m_Key = m_PhysicalObject[m_CurrentSlot].GetComponent<KeyIdentifier>();
+            }
+
             m_PhysicalObject[m_CurrentSlot].gameObject.SetActive(true);
         }
         else
         {
             m_ItemIdentifier = null;
         }
+
         UpdateUi();
         m_OnUpdatedSlot.Invoke();
     }
@@ -321,12 +327,18 @@ public class ItemManager : MonoBehaviour
                 m_ItemIdentifier = m_PhysicalObject[m_CurrentSlot].GetComponent<ItemIdentifier>();
             }
 
+            if (m_PhysicalObject[m_CurrentSlot].GetComponent<KeyIdentifier>() != null)
+            {
+                m_Key = m_PhysicalObject[m_CurrentSlot].GetComponent<KeyIdentifier>();
+            }
+
             m_PhysicalObject[m_CurrentSlot].gameObject.SetActive(true);
         }
         else
         {
             m_ItemIdentifier = null;
         }
+
         UpdateUi();
         m_OnUpdatedSlot.Invoke();
     }
