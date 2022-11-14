@@ -48,7 +48,7 @@ public class AIModule : MonoBehaviour
     [SerializeField, Range(0.5f, 100), Tooltip("The speed the AI will chase the Player at.")] float m_ChaseSpeed = 5f;
 
     //=========================================== AI chase
-    [SerializeField, Tooltip("How long the AI will look for the player before returning to roaming.")] float m_InterestTime = 5f;
+    [SerializeField, Tooltip("How long the AI will look for the player before returning to roaming.")] float m_HuntDuration = 5f;
 
     [Header("Audio")]
     [SerializeField] UnityEvent m_EnterChase;
@@ -84,7 +84,6 @@ public class AIModule : MonoBehaviour
 
     float m_TimerIdle = 0;
     float m_IdleDuration = 5;
-    AudioManager m_AudioManager;
     void Start()
     {
         if (m_PlayerSearch == PlayerSearch.TAG)
@@ -100,6 +99,7 @@ public class AIModule : MonoBehaviour
             }
         }
 
+        m_InterestTimer = 0;
         m_TimerIdle = m_IdleDuration;
         m_NavMeshAgent = GetComponent<NavMeshAgent>();
 
@@ -113,8 +113,6 @@ public class AIModule : MonoBehaviour
         m_AiStates = EnemyStates.ROAM;
 
         m_Input = FindObjectOfType<InputManager>();
-        m_InterestTimer = m_InterestTime;
-        m_AudioManager = FindObjectOfType<AudioManager>();
         m_GameManger = FindObjectOfType<GameManger>();
 
         ApplyNavSettings();
@@ -226,12 +224,15 @@ public class AIModule : MonoBehaviour
 
         if (Distance < m_SearchDistance && m_Input.GetCandleState() && m_AiStates != EnemyStates.CHASE)
         {
-            m_IsChasing = true;
-            SetAiSpeed(m_ChaseSpeed);
-            m_ExitRoam.Invoke();
 
-            m_EnterChase.Invoke();
+            m_IsChasing = true;
             m_AiStates = EnemyStates.CHASE;
+            SetAiSpeed(m_ChaseSpeed);
+
+            Debug.Log("Needs to chase");
+
+            m_ExitRoam.Invoke();
+            m_EnterChase.Invoke();
         }
 
         //=======================================================
@@ -242,6 +243,7 @@ public class AIModule : MonoBehaviour
 
             if (Physics.Raycast(transform.position, Direction, out deathCast, m_KillDistance))
             {
+                Debug.DrawLine(transform.position, deathCast.point);
                 if (deathCast.collider.tag == "Player")
                 {
                     m_GameManger.ChangeScene(m_GameManger.GetGameOverName());
@@ -251,10 +253,10 @@ public class AIModule : MonoBehaviour
 
         if (m_IsChasing)
         {
-            m_InterestTimer -= Time.deltaTime;
-            if (m_InterestTimer < 1)
+            m_InterestTimer += Time.deltaTime;
+            if (m_InterestTimer > m_HuntDuration)
             {
-
+                m_InterestTimer = 0;
                 SetAiSpeed(m_RoamSpeed);
                 m_IsChasing = false;
 
