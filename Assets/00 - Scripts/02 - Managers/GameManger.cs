@@ -85,6 +85,11 @@ public class GameManger : MonoBehaviour
             Cursor.visible = true;
         }
 
+        if (Time.timeScale == 0)
+        {
+            Time.timeScale = 1;
+        }
+
         if (m_DataSystem != null && m_UseQuit)
         {
             SetupValues();
