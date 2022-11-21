@@ -417,7 +417,10 @@ public class ItemManager : MonoBehaviour
 
         Destroy(m_PhysicalObject[m_CurrentSlot]);
         m_PhysicalObject[m_CurrentSlot] = null;
-
+        if (m_ItemIdentifier)
+        {
+            m_ItemIdentifier = null;
+        }
         UpdateUi();
     }
 
