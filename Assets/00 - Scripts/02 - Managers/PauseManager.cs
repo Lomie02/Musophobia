@@ -15,7 +15,7 @@ public class PauseManager : GameManger
     AudioSource[] m_PausedAudioSource = null;
     
     bool m_IsPaused = false;
-    DataSystem m_DataSystem;
+   // DataSystem m_DataSystemZZZ;
     bool m_Frozen;
     void Start()
     {
@@ -78,7 +78,7 @@ public class PauseManager : GameManger
         {
             if (!_state)
             {
-                m_PausedAudioSource[i].Pause();
+                m_PausedAudioSource[i].Pause(); 
             }
             else
             {

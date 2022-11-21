@@ -49,7 +49,7 @@ public class GameManger : MonoBehaviour
 
     //======================================================
     PauseManager m_PauseManager = null;
-    DataSystem m_DataSystem = null;
+    protected DataSystem m_DataSystem = null;
 
     PlayerCamera m_PlayerCamera = null;
     Resolution m_Resolution = Resolution.Res2;
