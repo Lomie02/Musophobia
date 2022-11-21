@@ -2921,10 +2921,10 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 1, g: 0, b: 0, a: 1}
-    m_PressedColor: {r: 0.5377358, g: 0.34242612, b: 0.34242612, a: 1}
-    m_SelectedColor: {r: 0.2924528, g: 0.026210386, b: 0.026210386, a: 1}
-    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_HighlightedColor: {r: 1, g: 1, b: 1, a: 0.40392157}
+    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_DisabledColor: {r: 1, g: 1, b: 1, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
   m_SpriteState:
@@ -2939,7 +2939,7 @@ MonoBehaviour:
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
   m_Interactable: 1
-  m_TargetGraphic: {fileID: 99532414}
+  m_TargetGraphic: {fileID: 490519367}
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
@@ -10558,7 +10558,7 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: Something monsterous awaits for you in the dark, hide in the dark, don't
-    risk running.
+    risk it spotting your light.
 --- !u!222 &307789053
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -35741,7 +35741,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Read notes in order to uncover the mystery of alice smith
+  m_Text: Read notes in order to uncover the mystery.
 --- !u!222 &1225683646
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -39557,7 +39557,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Some rooms are locked and require a key. You must find the correct one
+  m_Text: Some rooms are locked and require a key. You must find the correct ones.
 --- !u!222 &1380167679
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -48548,33 +48548,31 @@ MonoBehaviour:
     m_LineSpacing: 1
   m_Text: '------------
 
-    "F" to Turn Flashlight On/Off,
+    "F" to Turn Flashlight On/Off
 
-    "E" To Pick Up/Use.
+    "E" to Pick Up/Use
 
     (Exit
     when using Notes)
 
-    "Mouse-Wheel/1-5" To Switch Between Items.
+    "Mouse-Wheel/1-5" to Switch Between Items
 
     "Right-Click"
-    to Toggle Lighter
+    to Light Lighter
 
     "G" to Drop Items
 
-    "I" to Access Inventory
+    "R" to Inspect Item
 
     "L-Shift"
     to Sprint
 
-    "P" Pause Menu
-
-    "R" to Inspect Item/s
-
     "Ctrl" to Crouch
 
-    (Press
-    "T" at anytime to bring up this tutorial)'
+    "Esc" to Pause Menu
+
+    (Press "T" at anytime
+    to bring up the controls)'
 --- !u!222 &1802580641
 CanvasRenderer:
   m_ObjectHideFlags: 0
