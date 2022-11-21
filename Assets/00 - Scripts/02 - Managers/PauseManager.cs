@@ -16,7 +16,7 @@ public class PauseManager : GameManger
     
     bool m_IsPaused = false;
     DataSystem m_DataSystem;
-
+    bool m_Frozen;
     void Start()
     {
         m_PausedAudioSource = FindObjectsOfType<AudioSource>();
@@ -38,6 +38,7 @@ public class PauseManager : GameManger
 
     public void SetPauseState(bool _state)
     {
+        if (m_Frozen) { return; }
         m_IsPaused = _state;
         SetPausePanel(m_IsPaused);
         SetAudioSources(m_IsPaused);
@@ -88,6 +89,7 @@ public class PauseManager : GameManger
 
     public void CyclePause()
     {
+        if (m_Frozen) { return; }
         if (m_IsPaused)
         {
             m_IsPaused = false;
