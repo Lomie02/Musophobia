@@ -120,8 +120,6 @@ public class ItemManager : MonoBehaviour
                 m_SlotsUi[i].gameObject.GetComponent<Image>().enabled = false;
             }
         }
-
-        Debug.Log("Updated UI");
     }
 
     void Update()
