@@ -51711,6 +51711,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1969686351}
+  - component: {fileID: 1969686352}
   m_Layer: 5
   m_Name: Text (to Main Game)
   m_TagString: Untagged
@@ -51747,6 +51748,21 @@ RectTransform:
   m_AnchoredPosition: {x: -278.98, y: 85.5}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1969686352
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1969686350}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 365524a29d6f10d49aab564d87c8d09e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  TurnOn1: {fileID: 248998125}
+  TurnOff1: {fileID: 769379137}
+  TurnOff2: {fileID: 1049754880}
 --- !u!1001 &1970402332
 PrefabInstance:
   m_ObjectHideFlags: 0
