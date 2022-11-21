@@ -391,8 +391,6 @@ public class ItemManager : MonoBehaviour
             m_Key = null;
         }
 
-
-
         m_Rig[m_CurrentSlot].isKinematic = false;
         m_Rig[m_CurrentSlot].useGravity = true;
 
