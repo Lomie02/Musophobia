@@ -20,7 +20,7 @@ public class ItemManager : MonoBehaviour
     bool m_UsingRotate = false;
 
     public GameObject[] m_PhysicalObject;
-    int m_CurrentSlot = 0;
+    public int m_CurrentSlot = 0;
     Rigidbody[] m_Rig = null;
 
     [Header("Rotation")]
@@ -30,7 +30,7 @@ public class ItemManager : MonoBehaviour
 
     [Header("Item Box")]
     public Transform m_ItemBox = null;
-    ItemIdentifier m_ItemIdentifier = null;
+    public ItemIdentifier m_ItemIdentifier = null;
 
     public Vector3 m_DefaultPosition = Vector3.zero;
     public Vector3 m_ItemBoxPreview = Vector3.zero;
@@ -100,30 +100,29 @@ public class ItemManager : MonoBehaviour
         m_Selections[m_PreviousSlot].color = m_DefaultSelectionColor;
         m_Selections[m_CurrentSlot].color = m_SelectionColor;
 
-
         for (int i = 0; i < m_PhysicalObject.Length; i++)
         {
             if (m_PhysicalObject[i] != null)
             {
                 for (int j = 0; j < m_Items.Length; j++)
                 {
-                    if (m_Items[j].m_Name == m_ItemIdentifier.GetName())
+                    if (m_Items[j].m_Name == GetCurrentItemName())
                     {
                         m_SlotsUi[m_CurrentSlot].sprite = m_Items[j].m_Sprite;
                         m_SlotsUi[m_CurrentSlot].gameObject.GetComponent<Image>().enabled = true;
-                        continue;
+                        return;
                     }
                 }
             }
             else
             {
-                m_SlotsUi[i].sprite = null;
+                m_SlotsUi[m_CurrentSlot].sprite = null;
                 m_SlotsUi[i].gameObject.GetComponent<Image>().enabled = false;
             }
-
         }
-    }
 
+        Debug.Log("Updated UI");
+    }
 
     void Update()
     {
@@ -394,8 +393,7 @@ public class ItemManager : MonoBehaviour
             m_Key = null;
         }
 
-        m_ItemIdentifier.DroppedSound();
-        m_ItemIdentifier = null;
+
 
         m_Rig[m_CurrentSlot].isKinematic = false;
         m_Rig[m_CurrentSlot].useGravity = true;
@@ -407,7 +405,11 @@ public class ItemManager : MonoBehaviour
         m_Rig[m_CurrentSlot] = null;
         m_PhysicalObject[m_CurrentSlot] = null;
 
+        m_ItemIdentifier.DroppedSound();
+        m_ItemIdentifier = null;
+
         UpdateUi();
+
     }
 
     public void DeleteItem()

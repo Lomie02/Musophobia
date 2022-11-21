@@ -15,14 +15,14 @@ public class PauseManager : GameManger
     AudioSource[] m_PausedAudioSource = null;
     
     bool m_IsPaused = false;
-    DataSystem m_DataSystem;
+    DataSystem m_DataSystemZZZ;
     bool m_Frozen;
     void Start()
     {
         m_PausedAudioSource = FindObjectsOfType<AudioSource>();
         m_Player = FindObjectOfType<PlayerCamera>();
 
-        m_DataSystem = GetComponent<DataSystem>();
+        m_DataSystemZZZ = GetComponent<DataSystem>();
         SetPausePanel(m_IsPaused);
         SetAudioSources(m_IsPaused);
 
@@ -66,8 +66,8 @@ public class PauseManager : GameManger
 
     public void SaveSettings()
     {
-        m_DataSystem.SetMouseSens(m_MouseSlider.value);
-        m_DataSystem.SetFieldOfView(m_FieldOfViewSlider.value);
+        m_DataSystemZZZ.SetMouseSens(m_MouseSlider.value);
+        m_DataSystemZZZ.SetFieldOfView(m_FieldOfViewSlider.value);
     }
 
     void SetAudioSources(bool _state)
@@ -78,7 +78,7 @@ public class PauseManager : GameManger
         {
             if (!_state)
             {
-                m_PausedAudioSource[i].Pause();
+                m_PausedAudioSource[i].Pause(); 
             }
             else
             {
