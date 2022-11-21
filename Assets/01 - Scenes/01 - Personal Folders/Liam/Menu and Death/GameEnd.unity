@@ -210,7 +210,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Musophobia BETA Build
+  m_Text: 'Musophobia
 
 '
 --- !u!222 &111472893
@@ -879,7 +879,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Thanks for playing the build.
+  m_Text: Thanks for playing
 --- !u!222 &914431517
 CanvasRenderer:
   m_ObjectHideFlags: 0
