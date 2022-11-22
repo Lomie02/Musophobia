@@ -145,8 +145,6 @@ public class InputManager : MonoBehaviour
                 cast.collider.gameObject.transform.position = m_ItemBox.position;
                 cast.collider.gameObject.transform.parent = m_ItemBox;
 
-                //m_ItemManager.SetObject(cast.collider.gameObject);
-
                 if (!m_ItemManager.GetCurrentSlot())
                 {
                     m_ItemManager.SetObject(cast.collider.gameObject);

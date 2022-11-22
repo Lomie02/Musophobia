@@ -35,6 +35,13 @@ public class PlayerCamera : MonoBehaviour
     Transform m_Camera = null;
     float m_FieldOfView = 80f;
 
+    private float timer = 0.0f;
+    float bobbingSpeed = 0.2f;
+    float bobbingAmount = 0.02f;
+    float midpoint = 0.96f;
+
+    bool m_IsRunning = false;
+
     void Start()
     {
         m_Camera = GetComponent<Transform>();
@@ -60,19 +67,72 @@ public class PlayerCamera : MonoBehaviour
 
             m_Camera.eulerAngles = new Vector3(m_Ypos, m_Xpos, 0);
 
-            if (m_IsCrouching)
+            if (m_IsCrouching && !m_IsRunning)
             {
                 m_ColliderBody.center = new Vector3(0, -0.29f, 0);
                 m_ColliderBody.height = 1.35f;
                 transform.localPosition = m_CroushPositon;
+
+                bobbingAmount = 0.02f;
+                midpoint = -0.38f;
+                bobbingSpeed = 0.3f;
             }
-            else
+            else if(!m_IsCrouching && !m_IsRunning)
             {
                 m_ColliderBody.center = Vector3.zero;
                 m_ColliderBody.height = 2f;
                 transform.localPosition = m_RestPosition;
+
+                bobbingAmount = 0.02f;
+                midpoint = 0.514f;
+                bobbingSpeed = 0.2f;
+            }
+
+            if (m_IsRunning && !m_IsCrouching)
+            {
+                bobbingSpeed = 0.4f;
+                bobbingAmount = 0.01f;
             }
         }
+
+        float waveslice = 0.0f;
+        float horizontal = Input.GetAxis("Horizontal");
+        float vertical = Input.GetAxis("Vertical");
+
+        Vector3 cSharpConversion = transform.localPosition;
+
+        if (Mathf.Abs(horizontal) == 0 && Mathf.Abs(vertical) == 0)
+        {
+            timer = 0.0f;
+        }
+        else
+        {
+            waveslice = Mathf.Sin(timer);
+            timer = timer + bobbingSpeed;
+            if (timer > Mathf.PI * 2)
+            {
+                timer = timer - (Mathf.PI * 2);
+            }
+        }
+        if (waveslice != 0)
+        {
+            float translateChange = waveslice * bobbingAmount;
+            float totalAxes = Mathf.Abs(horizontal) + Mathf.Abs(vertical);
+            totalAxes = Mathf.Clamp(totalAxes, 0.0f, 1.0f);
+            translateChange = totalAxes * translateChange;
+            cSharpConversion.y = midpoint + translateChange;
+        }
+        else
+        {
+            cSharpConversion.y = midpoint;
+        }
+
+        transform.localPosition = cSharpConversion;
+    }
+
+    public void SetSprint(bool _state)
+    {
+        m_IsRunning = _state;
     }
 
     public void CursorState(bool _state)

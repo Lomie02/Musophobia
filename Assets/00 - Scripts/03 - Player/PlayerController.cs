@@ -50,6 +50,7 @@ public class PlayerController : MonoBehaviour
                 if (!m_FlyMode)
                 {
                     m_MovementSpeed = m_SprintSpeed;
+                    m_PlayerCamera.SetSprint(true);
                 }
                 else
                 {
@@ -59,7 +60,8 @@ public class PlayerController : MonoBehaviour
             else
             {
                 m_MovementSpeed = m_WalkSpeed;
-              
+                m_PlayerCamera.SetSprint(false);
+
             }
 
             m_PlayerMovement.MovePosition(transform.position + MoveV.normalized * m_MovementSpeed * Time.fixedDeltaTime);
