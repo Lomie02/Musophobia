@@ -20,7 +20,7 @@ public class ItemManager : MonoBehaviour
     bool m_UsingRotate = false;
 
     public GameObject[] m_PhysicalObject;
-    int m_CurrentSlot = 0;
+    public int m_CurrentSlot = 0;
     Rigidbody[] m_Rig = null;
 
     [Header("Rotation")]
@@ -30,7 +30,7 @@ public class ItemManager : MonoBehaviour
 
     [Header("Item Box")]
     public Transform m_ItemBox = null;
-    ItemIdentifier m_ItemIdentifier = null;
+    public ItemIdentifier[] m_ItemIdentifier = null;
 
     public Vector3 m_DefaultPosition = Vector3.zero;
     public Vector3 m_ItemBoxPreview = Vector3.zero;
@@ -72,6 +72,7 @@ public class ItemManager : MonoBehaviour
         m_LastWheelValue = Input.mouseScrollDelta.y;
         m_ItemBox.localPosition = m_DefaultPosition;
 
+        m_ItemIdentifier = new ItemIdentifier[m_PhysicalObject.Length];
         for (int i = 0; i < m_SlotsUi.Length; i++)
         {
             m_SlotsUi[i].gameObject.GetComponent<Image>().enabled = false;
@@ -100,18 +101,16 @@ public class ItemManager : MonoBehaviour
         m_Selections[m_PreviousSlot].color = m_DefaultSelectionColor;
         m_Selections[m_CurrentSlot].color = m_SelectionColor;
 
-
         for (int i = 0; i < m_PhysicalObject.Length; i++)
         {
             if (m_PhysicalObject[i] != null)
             {
                 for (int j = 0; j < m_Items.Length; j++)
                 {
-                    if (m_Items[j].m_Name == m_ItemIdentifier.GetName())
+                    if (m_Items[j].m_Name == m_ItemIdentifier[i].GetName() && m_ItemIdentifier[i] != null)
                     {
-                        m_SlotsUi[m_CurrentSlot].sprite = m_Items[j].m_Sprite;
-                        m_SlotsUi[m_CurrentSlot].gameObject.GetComponent<Image>().enabled = true;
-                        continue;
+                        m_SlotsUi[i].sprite = m_Items[j].m_Sprite;
+                        m_SlotsUi[i].gameObject.GetComponent<Image>().enabled = true;
                     }
                 }
             }
@@ -120,10 +119,8 @@ public class ItemManager : MonoBehaviour
                 m_SlotsUi[i].sprite = null;
                 m_SlotsUi[i].gameObject.GetComponent<Image>().enabled = false;
             }
-
         }
     }
-
 
     void Update()
     {
@@ -212,8 +209,8 @@ public class ItemManager : MonoBehaviour
 
         m_PhysicalObject[m_CurrentSlot].GetComponent<Collider>().enabled = false;
 
-        m_ItemIdentifier = _Object.GetComponent<ItemIdentifier>();
-        m_ItemIdentifier.PickUpSound();
+        m_ItemIdentifier[m_CurrentSlot] = _Object.GetComponent<ItemIdentifier>();
+        m_ItemIdentifier[m_CurrentSlot].PickUpSound();
 
         if (m_PhysicalObject[m_CurrentSlot].gameObject.GetComponent<Rigidbody>() != null)
         {
@@ -259,12 +256,76 @@ public class ItemManager : MonoBehaviour
     {
         if (m_ItemIdentifier != null)
         {
-            return m_ItemIdentifier.GetName();
+            return m_ItemIdentifier[m_CurrentSlot].GetName();
         }
         else
         {
             return " ";
         }
+    }
+
+    public void FindEmptySpot(GameObject _Object)
+    {
+        int foundSlot = 0;
+
+        for (int i = 0; i < m_PhysicalObject.Length; i++)
+        {
+            if (m_PhysicalObject[i] == null)
+            {
+                foundSlot = i;
+                break;
+            }
+        }
+
+
+        m_PhysicalObject[foundSlot] = _Object;
+
+        m_PhysicalObject[foundSlot].GetComponent<Collider>().enabled = false;
+
+        m_ItemIdentifier[foundSlot] = _Object.GetComponent<ItemIdentifier>();
+        m_ItemIdentifier[foundSlot].PickUpSound();
+
+        if (m_PhysicalObject[foundSlot].gameObject.GetComponent<Rigidbody>() != null)
+        {
+            m_Rig[foundSlot] = m_PhysicalObject[foundSlot].gameObject.GetComponent<Rigidbody>();
+            m_Rig[foundSlot].isKinematic = true;
+            m_Rig[foundSlot].useGravity = false;
+        }
+
+        if (foundSlot != m_CurrentSlot)
+        {
+            m_PhysicalObject[foundSlot].gameObject.SetActive(false);
+        }
+        else
+        {
+            m_PhysicalObject[foundSlot].gameObject.SetActive(true);
+        }
+
+        //=====================================
+        m_PhysicalObject[foundSlot].layer = 3;
+        for (int i = 0; i < m_PhysicalObject[foundSlot].transform.childCount; i++)
+        {
+            if (m_PhysicalObject[foundSlot].transform.GetChild(i).gameObject.activeSelf == false)
+            {
+                m_PhysicalObject[foundSlot].transform.GetChild(i).gameObject.SetActive(true);
+                m_PhysicalObject[foundSlot].transform.GetChild(i).gameObject.layer = 3;
+                m_PhysicalObject[foundSlot].transform.GetChild(i).gameObject.SetActive(false);
+            }
+            else
+            {
+                m_PhysicalObject[foundSlot].transform.GetChild(i).gameObject.layer = 3;
+            }
+        }
+
+        //=====================================
+
+
+        if (m_PhysicalObject[foundSlot].gameObject.GetComponent<KeyIdentifier>() != null)
+        {
+            m_Key = m_PhysicalObject[foundSlot].gameObject.GetComponent<KeyIdentifier>();
+        }
+
+        UpdateUi();
     }
 
     public void CycleSlots()
@@ -286,7 +347,7 @@ public class ItemManager : MonoBehaviour
         {
             if (m_PhysicalObject[m_CurrentSlot].GetComponent<ItemIdentifier>() != null)
             {
-                m_ItemIdentifier = m_PhysicalObject[m_CurrentSlot].GetComponent<ItemIdentifier>();
+                m_ItemIdentifier[m_CurrentSlot] = m_PhysicalObject[m_CurrentSlot].GetComponent<ItemIdentifier>();
             }
 
             if (m_PhysicalObject[m_CurrentSlot].GetComponent<KeyIdentifier>() != null)
@@ -298,7 +359,7 @@ public class ItemManager : MonoBehaviour
         }
         else
         {
-            m_ItemIdentifier = null;
+            m_ItemIdentifier[m_CurrentSlot] = null;
         }
 
         UpdateUi();
@@ -322,11 +383,6 @@ public class ItemManager : MonoBehaviour
 
         if (m_PhysicalObject[m_CurrentSlot] != null)
         {
-            if (m_PhysicalObject[m_CurrentSlot].GetComponent<ItemIdentifier>() != null)
-            {
-                m_ItemIdentifier = m_PhysicalObject[m_CurrentSlot].GetComponent<ItemIdentifier>();
-            }
-
             if (m_PhysicalObject[m_CurrentSlot].GetComponent<KeyIdentifier>() != null)
             {
                 m_Key = m_PhysicalObject[m_CurrentSlot].GetComponent<KeyIdentifier>();
@@ -336,11 +392,24 @@ public class ItemManager : MonoBehaviour
         }
         else
         {
-            m_ItemIdentifier = null;
+            m_ItemIdentifier[m_CurrentSlot] = null;
         }
 
         UpdateUi();
-        m_OnUpdatedSlot.Invoke();
+    }
+
+    public bool CheckIfSpace()
+    {
+
+        for (int i = 0; i < m_PhysicalObject.Length; i++)
+        {
+            if (m_PhysicalObject[i] == null)
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     public bool GetCurrentSlot()
@@ -354,7 +423,6 @@ public class ItemManager : MonoBehaviour
             return false;
         }
     }
-
     public KeyIdentifier GetKey()
     {
         return m_Key;
@@ -394,9 +462,6 @@ public class ItemManager : MonoBehaviour
             m_Key = null;
         }
 
-        m_ItemIdentifier.DroppedSound();
-        m_ItemIdentifier = null;
-
         m_Rig[m_CurrentSlot].isKinematic = false;
         m_Rig[m_CurrentSlot].useGravity = true;
 
@@ -406,6 +471,9 @@ public class ItemManager : MonoBehaviour
 
         m_Rig[m_CurrentSlot] = null;
         m_PhysicalObject[m_CurrentSlot] = null;
+
+        m_ItemIdentifier[m_CurrentSlot].DroppedSound();
+        m_ItemIdentifier[m_CurrentSlot] = null;
 
         UpdateUi();
     }
@@ -417,7 +485,10 @@ public class ItemManager : MonoBehaviour
 
         Destroy(m_PhysicalObject[m_CurrentSlot]);
         m_PhysicalObject[m_CurrentSlot] = null;
-
+        if (m_ItemIdentifier[m_CurrentSlot] != null)
+        {
+            m_ItemIdentifier[m_CurrentSlot] = null;
+        }
         UpdateUi();
     }
 
@@ -445,17 +516,17 @@ public class ItemManager : MonoBehaviour
 
     public void CyclePower()
     {
-        if (m_ItemIdentifier)
+        if (m_ItemIdentifier[m_CurrentSlot])
         {
-            m_ItemIdentifier.CycleState();
+            m_ItemIdentifier[m_CurrentSlot].CycleState();
         }
     }
 
     public void Use()
     {
-        if (m_ItemIdentifier)
+        if (m_ItemIdentifier[m_CurrentSlot])
         {
-            m_ItemIdentifier.UseItem();
+            m_ItemIdentifier[m_CurrentSlot].UseItem();
         }
     }
 }

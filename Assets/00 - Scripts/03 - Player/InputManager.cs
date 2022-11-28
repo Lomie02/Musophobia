@@ -99,11 +99,10 @@ public class InputManager : MonoBehaviour
 
             m_ItemManager.Use();
 
-            if (!m_ItemManager.GetCurrentSlot())
+            if (!m_ItemManager.CheckIfSpace())
             {
                 Searchitem();
             }
-
         }
 
         if (Input.GetKeyDown(m_CycleInventory))
@@ -146,7 +145,14 @@ public class InputManager : MonoBehaviour
                 cast.collider.gameObject.transform.position = m_ItemBox.position;
                 cast.collider.gameObject.transform.parent = m_ItemBox;
 
-                m_ItemManager.SetObject(cast.collider.gameObject);
+                if (!m_ItemManager.GetCurrentSlot())
+                {
+                    m_ItemManager.SetObject(cast.collider.gameObject);
+                }
+                else
+                {
+                    m_ItemManager.FindEmptySpot(cast.collider.gameObject);
+                }
             }
         }
     }

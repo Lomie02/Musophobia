@@ -49,7 +49,7 @@ public class GameManger : MonoBehaviour
 
     //======================================================
     PauseManager m_PauseManager = null;
-    DataSystem m_DataSystem = null;
+    protected DataSystem m_DataSystem = null;
 
     PlayerCamera m_PlayerCamera = null;
     Resolution m_Resolution = Resolution.Res2;
@@ -83,6 +83,11 @@ public class GameManger : MonoBehaviour
         {
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
+        }
+
+        if (Time.timeScale == 0)
+        {
+            Time.timeScale = 1;
         }
 
         if (m_DataSystem != null && m_UseQuit)

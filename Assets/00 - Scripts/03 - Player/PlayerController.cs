@@ -14,9 +14,12 @@ public class PlayerController : MonoBehaviour
     float m_MovementSpeed;
     PlayerCamera m_PlayerCamera = null;
     bool m_CrouchState = false;
+    bool m_FlyMode = false;
+
 
     void Start()
     {
+
         m_PlayerCamera = FindObjectOfType<PlayerCamera>();
         m_PlayerMovement = GetComponent<Rigidbody>();
 
@@ -44,15 +47,30 @@ public class PlayerController : MonoBehaviour
 
             if (Input.GetKey(KeyCode.LeftShift) && Input.GetKey(KeyCode.W) && !m_CrouchState)
             {
-                m_MovementSpeed = m_SprintSpeed;
+                if (!m_FlyMode)
+                {
+                    m_MovementSpeed = m_SprintSpeed;
+                    m_PlayerCamera.SetSprint(true);
+                }
+                else
+                {
+                    m_MovementSpeed = 7f;
+                }
             }
             else
             {
                 m_MovementSpeed = m_WalkSpeed;
+                m_PlayerCamera.SetSprint(false);
+
             }
 
             m_PlayerMovement.MovePosition(transform.position + MoveV.normalized * m_MovementSpeed * Time.fixedDeltaTime);
         }
+    }
+
+    public void FlyMode(bool _state)
+    {
+        m_FlyMode = _state;
     }
 
     public void CycleCrouch()
