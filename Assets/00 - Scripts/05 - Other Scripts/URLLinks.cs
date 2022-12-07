@@ -19,6 +19,11 @@ public class URLLinks : MonoBehaviour
         Application.OpenURL(" https://thecatholicrats.itch.io/");
     }
 
+    public void OpenGameJolt()
+    {
+        Application.OpenURL("https://gamejolt.com/games/musophobia/767743");
+    }
+
     public void OpenURL(string link)
         {
             Application.OpenURL(link);
